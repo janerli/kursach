@@ -63,7 +63,7 @@ class MainWindow(Toplevel):
             image=button_image_1,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
+            command=self.open_admin_panel,
             relief="flat"
         )
         admin_btn.place(
@@ -75,7 +75,7 @@ class MainWindow(Toplevel):
 
         button_image_2 = PhotoImage(
             file=relative_to_assets("button_2.png"))
-        button_2 = Button(
+        stats_btn = Button(
             self.canvas,
             image=button_image_2,
             borderwidth=0,
@@ -83,7 +83,7 @@ class MainWindow(Toplevel):
             command=lambda: print("button_2 clicked"),
             relief="flat"
         )
-        button_2.place(
+        stats_btn.place(
             x=0.0,
             y=180.0,
             width=152.0,
@@ -92,7 +92,7 @@ class MainWindow(Toplevel):
 
         button_image_3 = PhotoImage(
             file=relative_to_assets("button_3.png"))
-        button_3 = Button(
+        order_btn = Button(
             self.canvas,
             image=button_image_3,
             borderwidth=0,
@@ -100,7 +100,7 @@ class MainWindow(Toplevel):
             command=lambda: print("button_3 clicked"),
             relief="flat"
         )
-        button_3.place(
+        order_btn.place(
             x=0.0,
             y=332.0,
             width=152.0,
@@ -109,7 +109,7 @@ class MainWindow(Toplevel):
 
         button_image_4 = PhotoImage(
             file=relative_to_assets("button_4.png"))
-        button_4 = Button(
+        menu_btn = Button(
             self.canvas,
             image=button_image_4,
             borderwidth=0,
@@ -117,7 +117,7 @@ class MainWindow(Toplevel):
             command=lambda: print("button_4 clicked"),
             relief="flat"
         )
-        button_4.place(
+        menu_btn.place(
             x=0.0,
             y=256.0,
             width=152.0,
@@ -125,16 +125,16 @@ class MainWindow(Toplevel):
         )
 
         button_image_5 = PhotoImage(
-            file=relative_to_assets("button_5.png"))
-        button_5 = Button(
+            file=relative_to_assets("clients_btn.png"))
+        clients_btn = Button(
             self.canvas,
             image=button_image_5,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_5 clicked"),
+            command=lambda: print("clients_btn clicked"),
             relief="flat"
         )
-        button_5.place(
+        clients_btn.place(
             x=0.0,
             y=408.0,
             width=152.0,
