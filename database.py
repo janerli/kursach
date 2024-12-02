@@ -1,7 +1,6 @@
 import sqlite3
 import bcrypt
 import json
-# from ct_db import create_tables
 
 conn = sqlite3.connect('pizza.db')
 # create_tables(conn)
