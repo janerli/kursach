@@ -125,13 +125,13 @@ class MainWindow(Toplevel):
         )
 
         button_image_5 = PhotoImage(
-            file=relative_to_assets("clients_btn.png"))
+            file=relative_to_assets("button_5.png"))
         clients_btn = Button(
             self.canvas,
             image=button_image_5,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("clients_btn clicked"),
+            command=lambda: print("button_5 clicked"),
             relief="flat"
         )
         clients_btn.place(
