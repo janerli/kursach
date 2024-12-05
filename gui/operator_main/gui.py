@@ -3,29 +3,27 @@ from pathlib import Path
 from tkinter import messagebox, Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\damn\pycharm projects\kursach\gui\main_window\assets")
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\janerli\Desktop\колледж\kursach\gui\operator_main\assets")
 
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 
-def mainWindow(access_level):
-    MainWindow(access_level)
+def opWindow():
+    OperatorWindow()
 
 
-class MainWindow(Toplevel):
+class OperatorWindow(Toplevel):
+    #
+    # def open_admin_panel(self):
+    #     if self.access_level == 'admin':
+    #         pass # SettingsWindow(self)
 
-    def open_admin_panel(self):
-        if self.access_level == 'admin':  # Доступ только для администраторов (access_level = 2)
-            pass # SettingsWindow(self)  # Ваше окно настроек
-        else:
-            messagebox.showerror("Ошибка доступа", "У вас нет прав доступа к админ-панели.")
 
-    def __init__(self, access_level, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         Toplevel.__init__(self, *args, **kwargs)
 
-        self.access_level = access_level
         self.geometry("928x584")
         self.configure(bg="#CEAB83")
 
@@ -63,7 +61,7 @@ class MainWindow(Toplevel):
             image=button_image_1,
             borderwidth=0,
             highlightthickness=0,
-            command=self.open_admin_panel,
+            command=lambda: print("button_1 clicked"),
             relief="flat"
         )
         admin_btn.place(

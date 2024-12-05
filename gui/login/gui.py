@@ -1,11 +1,13 @@
 from pathlib import Path
 from database import conn
 from tkinter import messagebox, Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel
-from ..main_window.main import mainWindow
+from ..admin_main.main import adminWindow
+from ..chef_main.gui import chefWindow
+from ..operator_main.gui import opWindow
 import database
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\damn\pycharm projects\kursach\gui\login\assets")
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\janerli\Desktop\колледж\kursach\gui\login\assets")
 
 
 def relative_to_assets(path: str) -> Path:
@@ -24,7 +26,14 @@ class Login(Toplevel):
         user_id, access_level = database.check_login(conn, username, password)
         if user_id:
             self.destroy()
-            mainWindow(access_level)
+            if access_level=='admin':
+                adminWindow()
+            elif access_level=='operator':
+                opWindow()
+                pass
+            elif access_level=='chef':
+                chefWindow()
+                pass
             return
         else:
             messagebox.showerror("Ошибка", "Неправильный логин или пароль")

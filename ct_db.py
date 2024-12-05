@@ -10,7 +10,7 @@ def create_tables(conn):
                 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
-                access_level INTEGER NOT NULL CHECK (access_level IN ('1', '2'))
+                access_level INTEGER NOT NULL CHECK (access_level IN ('admin', 'operator', 'chef'))
             )
         """)
 
