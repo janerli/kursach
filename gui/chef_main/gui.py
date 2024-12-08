@@ -10,8 +10,8 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 
-def chefWindow():
-    ChefWindow()
+def chefWindow(access_level):
+    ChefWindow(access_level)
 
 
 class ChefWindow(Toplevel):
@@ -21,10 +21,10 @@ class ChefWindow(Toplevel):
     #         pass # SettingsWindow(self)
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, access_level, *args, **kwargs):
         Toplevel.__init__(self, *args, **kwargs)
 
-        # self.access_level = access_level
+        self.access_level = access_level
         self.geometry("928x584")
         self.configure(bg="#CEAB83")
 

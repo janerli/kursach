@@ -6,12 +6,13 @@ OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\janerli\Desktop\колледж\kursach\gui\admin_main\assets")
 
 
+
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 
-def adminWindow():
-    AdminWindow()
+def adminWindow(access_level):
+    AdminWindow(access_level)
 
 
 class AdminWindow(Toplevel):
@@ -21,9 +22,10 @@ class AdminWindow(Toplevel):
     #         pass # SettingsWindow(self)
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, access_level, *args, **kwargs):
         Toplevel.__init__(self, *args, **kwargs)
 
+        self.access_level = access_level
         self.geometry("928x584")
         self.configure(bg="#CEAB83")
 
@@ -52,6 +54,15 @@ class AdminWindow(Toplevel):
             76.0,
             67.0,
             image=image_image_1
+        )
+
+        self.canvas.create_text(
+            183.0,
+            36.0,
+            anchor="nw",
+            text=f"Добро пожаловать, тут будет имя!\nВаша роль:{self.access_level}",
+            fill="#FFFFFF",
+            font=("Montserrat Alternates Regular", 36 * -1)
         )
 
         button_image_1 = PhotoImage(

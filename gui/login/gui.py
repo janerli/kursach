@@ -27,12 +27,12 @@ class Login(Toplevel):
         if user_id:
             self.destroy()
             if access_level=='admin':
-                adminWindow()
+                adminWindow(access_level)
             elif access_level=='operator':
-                opWindow()
+                opWindow(access_level)
                 pass
             elif access_level=='chef':
-                chefWindow()
+                chefWindow(access_level)
                 pass
             return
         else:
@@ -181,5 +181,7 @@ class Login(Toplevel):
             141.0,
             image=image_image_5
         )
+
+
         self.resizable(False, False)
         self.mainloop()
