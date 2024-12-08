@@ -16,6 +16,13 @@ def create_tables(conn):
     cursor = conn.cursor()
     try:
         cursor.execute("""
+        CREATE TABLE IF NOT EXISTS access_levels (
+                access_level_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                level_name TEXT UNIQUE NOT NULL
+            )
+        """)
+
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 first_name TEXT,
@@ -23,7 +30,8 @@ def create_tables(conn):
                 middle_name TEXT,
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
-                access_level INTEGER NOT NULL CHECK (access_level IN ('admin', 'operator', 'chef'))
+                access_level_id INTEGER NOT NULL,
+                FOREIGN KEY (access_level_id) REFERENCES access_levels(access_level_id)
             )
         """)
 
@@ -54,6 +62,7 @@ def create_tables(conn):
                 ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT UNIQUE NOT NULL,
                 quantity INTEGER NOT NULL,
+                unit TEXT DEFAULT 'граммы',
                 price REAL NOT NULL
             )
         """)

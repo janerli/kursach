@@ -1,23 +1,20 @@
 from pathlib import Path
-from database import conn
-from tkinter import messagebox, Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel
+
+from tkinter import Toplevel, Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
 from ..main_window.main import mainWindow
+from database import conn
 import database
 
+
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\damn\pycharm projects\kursach\gui\login\assets")
+ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-
-def loginWindow():
-    Login()
-
-
 class Login(Toplevel):
-    # global access
+
     def on_login(self):
         username = self.username.get()
         password = self.password.get()
@@ -32,50 +29,51 @@ class Login(Toplevel):
     def __init__(self, *args, **kwargs):
         Toplevel.__init__(self, *args, **kwargs)
 
-        self.geometry("928x584")
-        self.configure(bg="#FFFFFF")
+        self.geometry("1100x700")
+        self.configure(bg = "#FFFFFF")
+
 
         self.canvas = Canvas(
             self,
-            bg="#FFFFFF",
-            height=584,
-            width=928,
-            bd=0,
-            highlightthickness=0,
-            relief="ridge"
+            bg = "#FFFFFF",
+            height = 700,
+            width = 1100,
+            bd = 0,
+            highlightthickness = 0,
+            relief = "ridge"
         )
 
-        self.canvas.place(x=0, y=0)
+        self.canvas.place(x = 0, y = 0)
         image_image_1 = PhotoImage(
             file=relative_to_assets("image_1.png"))
         image_1 = self.canvas.create_image(
-            464.0,
-            292.0,
+            635.0,
+            399.0,
             image=image_image_1
         )
 
         self.canvas.create_text(
-            556.0,
-            122.0,
+            647.0,
+            89.0,
             anchor="nw",
             text="Авторизация",
             fill="#FFFFFF",
-            font=("Montserrat Alternates Regular", 36 * -1)
+            font=("Montserrat Alternates Regular", 40 * -1)
         )
 
         image_image_2 = PhotoImage(
             file=relative_to_assets("image_2.png"))
         image_2 = self.canvas.create_image(
-            695.0,
-            250.0,
+            790.0,
+            268.0,
             image=image_image_2
         )
 
         image_image_3 = PhotoImage(
             file=relative_to_assets("image_3.png"))
         image_3 = self.canvas.create_image(
-            690.0,
-            364.0,
+            790.0,
+            438.0,
             image=image_image_3
         )
 
@@ -90,43 +88,43 @@ class Login(Toplevel):
             relief="flat"
         )
         button_1.place(
-            x=604.0,
-            y=435.0,
-            width=185.0,
-            height=58.0
+            x=803.0,
+            y=579.0,
+            width=272.0,
+            height=85.27567291259766
         )
 
         self.canvas.create_text(
-            563.0,
-            189.0,
+            567.0,
+            174.0,
             anchor="nw",
             text="Логин",
             fill="#FFFFFF",
-            font=("Montserrat Alternates Regular", 20 * -1)
+            font=("Montserrat Alternates Regular", 32 * -1)
         )
 
         self.canvas.create_text(
-            563.0,
-            302.0,
+            567.0,
+            344.0,
             anchor="nw",
             text="Пароль",
             fill="#FFFFFF",
-            font=("Montserrat Alternates Regular", 20 * -1)
+            font=("Montserrat Alternates Regular", 32 * -1)
         )
 
         image_image_4 = PhotoImage(
             file=relative_to_assets("image_4.png"))
         image_4 = self.canvas.create_image(
-            216.0,
-            324.0,
+            229.0,
+            344.0,
             image=image_image_4
         )
 
         entry_image_1 = PhotoImage(
             file=relative_to_assets("entry_1.png"))
         entry_bg_1 = self.canvas.create_image(
-            696.0,
-            365.0,
+            799.5,
+            439.0,
             image=entry_image_1
         )
         self.password = Entry(
@@ -138,17 +136,17 @@ class Login(Toplevel):
             show='*'
         )
         self.password.place(
-            x=560.0,
-            y=347.0,
-            width=272.0,
-            height=34.0
+            x=589.0,
+            y=411.0,
+            width=421.0,
+            height=54.0
         )
 
         entry_image_2 = PhotoImage(
             file=relative_to_assets("entry_2.png"))
         entry_bg_2 = self.canvas.create_image(
-            699.0,
-            250.0,
+            795.5,
+            267.0,
             image=entry_image_2
         )
         self.username = Entry(
@@ -159,17 +157,17 @@ class Login(Toplevel):
             highlightthickness=0
         )
         self.username.place(
-            x=563.0,
-            y=232.0,
-            width=272.0,
-            height=34.0
+            x=585.0,
+            y=239.0,
+            width=421.0,
+            height=54.0
         )
 
         image_image_5 = PhotoImage(
             file=relative_to_assets("image_5.png"))
         image_5 = self.canvas.create_image(
-            216.0,
-            141.0,
+            229.0,
+            162.0,
             image=image_image_5
         )
         self.resizable(False, False)

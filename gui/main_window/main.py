@@ -3,7 +3,7 @@ from pathlib import Path
 from tkinter import messagebox, Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\damn\pycharm projects\kursach\gui\main_window\assets")
+ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
 
 def relative_to_assets(path: str) -> Path:
