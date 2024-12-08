@@ -61,6 +61,7 @@ def create_tables(conn):
         cursor.execute("""
                     CREATE TABLE IF NOT EXISTS orders (
                         order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        delivery TEXT NOT NULL CHECK (delivery IN ('доставка', 'самовывоз')),
                         status TEXT NOT NULL CHECK (status IN ('новый', 'в работе', 'готов', 'завершен', 'отменен'))
                     )
                 """)
