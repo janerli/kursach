@@ -39,11 +39,11 @@ class OrderHistory(Frame):
             fill="#D9D9D9",
             outline="")
 
-        button_image_1 = PhotoImage(
+        self.button_image_1 = PhotoImage(
             file=relative_to_assets("button_1.png"))
         button_1 = Button(
             self.canvas,
-            image=button_image_1,
+            image=self.button_image_1,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: print("button_1 clicked"),
@@ -56,12 +56,12 @@ class OrderHistory(Frame):
             height=66.26666259765625
         )
 
-        entry_image_1 = PhotoImage(
+        self.entry_image_1 = PhotoImage(
             file=relative_to_assets("entry_1.png"))
         entry_bg_1 = self.canvas.create_image(
             234.5,
             49.0,
-            image=entry_image_1
+            image=self.entry_image_1
         )
         entry_1 = Entry(
             self.canvas,
@@ -77,12 +77,12 @@ class OrderHistory(Frame):
             height=44.0
         )
 
-        entry_image_2 = PhotoImage(
+        self.entry_image_2 = PhotoImage(
             file=relative_to_assets("entry_2.png"))
         entry_bg_2 = self.canvas.create_image(
             671.5,
             117.0,
-            image=entry_image_2
+            image=self.entry_image_2
         )
         entry_2 = Entry(
             self.canvas,
@@ -98,12 +98,12 @@ class OrderHistory(Frame):
             height=44.0
         )
 
-        entry_image_3 = PhotoImage(
+        self.entry_image_3 = PhotoImage(
             file=relative_to_assets("entry_3.png"))
         entry_bg_3 = self.canvas.create_image(
             671.5,
             49.0,
-            image=entry_image_3
+            image=self.entry_image_3
         )
         entry_3 = Entry(
             self.canvas,
@@ -119,12 +119,12 @@ class OrderHistory(Frame):
             height=44.0
         )
 
-        entry_image_4 = PhotoImage(
+        self.entry_image_4 = PhotoImage(
             file=relative_to_assets("entry_4.png"))
         entry_bg_4 = self.canvas.create_image(
             234.5,
             117.0,
-            image=entry_image_4
+            image=self.entry_image_4
         )
         entry_4 = Entry(
             self.canvas,
@@ -176,11 +176,11 @@ class OrderHistory(Frame):
             font=("Montserrat Alternates Regular", 20 * -1)
         )
 
-        button_image_2 = PhotoImage(
+        self.button_image_2 = PhotoImage(
             file=relative_to_assets("button_2.png"))
         button_2 = Button(
             self.canvas,
-            image=button_image_2,
+            image=self.button_image_2,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: print("button_2 clicked"),
@@ -193,11 +193,11 @@ class OrderHistory(Frame):
             height=120.0
         )
 
-        button_image_3 = PhotoImage(
+        self.button_image_3 = PhotoImage(
             file=relative_to_assets("button_3.png"))
         button_3 = Button(
             self.canvas,
-            image=button_image_3,
+            image=self.button_image_3,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: print("button_3 clicked"),

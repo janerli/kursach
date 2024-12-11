@@ -31,7 +31,7 @@ class Order(Frame):
             "view": ViewOrder(self),
             "finish": FinishOrder(self),
             "add": AddOrder(self),
-            "choose": ChooseMenu(self)
+            "choose": ChooseMenu(self),
         }
 
         self.current_window = self.windows["view"]

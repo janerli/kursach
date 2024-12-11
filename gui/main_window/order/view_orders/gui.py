@@ -1,5 +1,5 @@
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, Frame
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, Frame, StringVar
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
@@ -15,6 +15,8 @@ class ViewOrder(Frame):
         self.parent = parent
 
         self.configure(bg="#CEAB83")
+
+
 
         self.canvas = Canvas(
             self,
@@ -35,11 +37,11 @@ class ViewOrder(Frame):
             fill="#D9D9D9",
             outline="")
 
-        button_image_1 = PhotoImage(
+        self.button_image_1 = PhotoImage(
             file=relative_to_assets("button_1.png"))
         button_1 = Button(
-            self,
-            image=button_image_1,
+            self.canvas,
+            image=self.button_image_1,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: print("button_1 clicked"),
@@ -61,11 +63,11 @@ class ViewOrder(Frame):
             font=("Montserrat Alternates Bold", 36 * -1)
         )
 
-        button_image_2 = PhotoImage(
+        self.button_image_2 = PhotoImage(
             file=relative_to_assets("button_2.png"))
         button_2 = Button(
-            self,
-            image=button_image_2,
+            self.canvas,
+            image=self.button_image_2,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: print("button_2 clicked"),
@@ -78,11 +80,11 @@ class ViewOrder(Frame):
             height=70.0
         )
 
-        button_image_3 = PhotoImage(
+        self.button_image_3 = PhotoImage(
             file=relative_to_assets("button_3.png"))
         button_3 = Button(
-            self,
-            image=button_image_3,
+            self.canvas,
+            image=self.button_image_3,
             borderwidth=0,
             highlightthickness=0,
             command=lambda: print("button_3 clicked"),
@@ -94,3 +96,4 @@ class ViewOrder(Frame):
             width=73.94000244140625,
             height=70.0
         )
+

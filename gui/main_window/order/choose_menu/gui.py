@@ -9,10 +9,13 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 class ChooseMenu(Frame):
-    def __init__(self, parent, controller=None, *args, **kwargs):
+    def __init__(self, parent, user_id, delivery_type, address, controller=None, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
         self.configure(bg = "#CEAB83")
         self.parent = parent
+        self.user_id = user_id
+        self.delivery_type = delivery_type
+        self.address = address
 
 
         self.canvas = Canvas(
