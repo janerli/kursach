@@ -1,41 +1,53 @@
 import sqlite3
 import bcrypt
 import json
+import logging
+from functools import wraps
 
 conn = sqlite3.connect('pizza.db')
 # create_tables(conn)
 
+def db_connection(func):
+    """
+    Декоратор для управления соединением с базой данных.
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        try:
+            result = func(conn, *args, **kwargs)
+            conn.commit()
+            return result
+        except Exception as e:
+            conn.rollback()
+            logging.error(f"Ошибка в функции {func.__name__}: {e}")
+            return None
+        finally:
+            conn.close()
+    return wrapper
 
-def add_user(conn, username, password, access_level):
+def add_user(conn, username, password, access_level_id, first_name=None, last_name=None, middle_name=None):
+    """Добавляет нового пользователя."""
     cursor = conn.cursor()
     try:
-        # Проверка на существование пользователя
-        cursor.execute("SELECT 1 FROM users WHERE username = ?", (username,))
-        if cursor.fetchone() is not None:
-            return False  # Пользователь с таким именем уже существует
-
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-        cursor.execute("INSERT INTO users (username, password, access_level) VALUES (?, ?, ?)",
-                       (username, hashed_password, access_level))
+        cursor.execute("""
+            INSERT INTO users (username, password, access_level_id, first_name, last_name, middle_name)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (username, password, access_level_id, first_name, last_name, middle_name))
         conn.commit()
-        return True
-    except sqlite3.IntegrityError as e:
-        conn.rollback()
-        print(f"Ошибка добавления пользователя: {e}")
-        return False
-    except Exception as e:
-        conn.rollback()
-        print(f"Произошла ошибка: {e}")
-        return False
+    except sqlite3.IntegrityError:
+        print(f"Пользователь '{username}' уже существует.")
+    except sqlite3.Error as e:
+        print(f"Ошибка при добавлении пользователя: {e}")
 
 
-def get_user_by_username(conn, username):  # Подключение к базе данных
+
+def get_user_by_username(conn, username):
+    """Получает пользователя по имени."""
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-    user = cursor.fetchone()
-    conn.close()
-    return user
+    return cursor.fetchone()
 
 
 def check_login(conn, username, password):
@@ -49,31 +61,15 @@ def check_login(conn, username, password):
     else:
         return None, None
 
-
-def create_order(conn, client_id, order_items):
+def add_client(conn, first_name, last_name, middle_name, phone, address):
+    """Добавляет клиента."""
     cursor = conn.cursor()
-    try:
-        conn.execute("BEGIN TRANSACTION")
-        total_price = sum(item['quantity'] * get_pizza_price(item['pizza_id']) for item in order_items)
-        cursor.execute(
-            "INSERT INTO orders (client_id, order_date, total_price, status) VALUES (?, datetime('now'), ?, 'new')",
-            (client_id, total_price))
-        order_id = cursor.lastrowid
-        for item in order_items:
-            cursor.execute("INSERT INTO order_items (order_id, pizza_id, quantity) VALUES (?, ?, ?)",
-                           (order_id, item['pizza_id'], item['quantity']))
-        conn.commit()
-        return order_id
-    except sqlite3.IntegrityError as e:
-        conn.rollback()
-        print(f"Ошибка целостности данных: {e}")
-        return None
-    except Exception as e:
-        conn.rollback()
-        print(f"Произошла ошибка: {e}")
-        return None
-    finally:
-        conn.close()
+    cursor.execute("""
+        INSERT INTO clients (first_name, last_name, middle_name, phone, address)
+        VALUES (?, ?, ?, ?, ?)
+    """, (first_name, last_name, middle_name, phone, address))
+    conn.commit()
+
 
 
 def get_pizza_price(conn, pizza_id):
@@ -84,28 +80,6 @@ def get_pizza_price(conn, pizza_id):
     return price[0] if price else None
 
 
-def get_order(conn, order_id):
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("SELECT order_id, client_id, order_date, total_price, status FROM orders WHERE order_id = ?",
-                   (order_id,))
-    order_data = cursor.fetchone()
-    if order_data is None:
-        return None
-
-    order = {
-        'order_id': order_data['order_id'],
-        'client_id': order_data['client_id'],
-        'order_date': order_data['order_date'],
-        'total_price': order_data['total_price'],
-        'status': order_data['status']
-    }
-
-    cursor.execute("SELECT pizza_id, quantity FROM order_items WHERE order_id = ?", (order_id,))
-    order_items = cursor.fetchall()
-    order['items'] = [{'pizza_id': item['pizza_id'], 'quantity': item['quantity']} for item in order_items]
-
-    return order
 
 
 def update_order(conn, order_id, updates):
@@ -323,3 +297,126 @@ def get_top_3_pizzas(conn):
     except Exception as e:
         print(f"Произошла ошибка: {e}")
         return []
+
+def get_order_history(conn, filters=None):
+    """
+    Возвращает историю заказов с применением фильтров.
+    """
+    filters = filters or {}
+    query = """
+        SELECT oh.history_id, oh.order_id, oh.client_id, oh.order_date, oh.total_price
+        FROM order_history oh
+        WHERE 1=1
+    """
+    params = []
+
+    if "client_id" in filters:
+        query += " AND oh.client_id = ?"
+        params.append(filters["client_id"])
+    if "order_date" in filters:
+        query += " AND oh.order_date = ?"
+        params.append(filters["order_date"])
+    if "status" in filters:
+        query += ''' AND EXISTS (
+            SELECT 1 FROM orders o WHERE o.order_id = oh.order_id AND o.status = ?
+        )'''
+        params.append(filters["status"])
+
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query, params)
+        return cursor.fetchall()
+    except sqlite3.Error as e:
+        print(f"Ошибка при получении истории заказов: {e}")
+        return []
+
+
+def get_pizza_ingredients(conn, pizza_id):
+    """
+    Получает список ингредиентов пиццы.
+    """
+    query = "SELECT name FROM ingredients WHERE pizza_id = ?"
+    cursor = conn.cursor()
+    cursor.execute(query, (pizza_id,))
+    return [{"name": row["name"]} for row in cursor.fetchall()]
+
+
+def update_pizza_ingredients(conn, pizza_id, ingredient, action):
+    """
+    Добавляет или удаляет ингредиент пиццы.
+    """
+    cursor = conn.cursor()
+    if action == "add":
+        cursor.execute("INSERT INTO ingredients (pizza_id, name) VALUES (?, ?)", (pizza_id, ingredient))
+    elif action == "remove":
+        cursor.execute("DELETE FROM ingredients WHERE pizza_id = ? AND name = ?", (pizza_id, ingredient))
+    else:
+        raise ValueError("Недопустимое действие.")
+
+def save_order(conn, client_id, delivery, status, order_items):
+    """
+    Сохраняет заказ в базу данных, включая элементы заказа и дополнительные ингредиенты.
+    """
+    cursor = conn.cursor()
+    try:
+        # Сохраняем основной заказ
+        cursor.execute("""
+            INSERT INTO orders (client_id, delivery, status)
+            VALUES (?, ?, ?)
+        """, (client_id, delivery, status))
+        order_id = cursor.lastrowid
+
+        # Сохраняем элементы заказа
+        for item in order_items:
+            # Собираем список добавленных ингредиентов
+            additional_ingredients = ",".join(item.get("additional_ingredients", []))
+            cursor.execute("""
+                INSERT INTO order_items (order_id, pizza_id, quantity, additional_ingredients)
+                VALUES (?, ?, ?, ?)
+            """, (order_id, item["pizza_id"], item["quantity"], additional_ingredients))
+
+        conn.commit()
+        print(f"Заказ #{order_id} успешно сохранен.")
+        return order_id
+    except sqlite3.Error as e:
+        conn.rollback()
+        print(f"Ошибка сохранения заказа: {e}")
+        return None
+
+
+def add_ingredient_to_order(conn, order_item_id, ingredient_name):
+    """
+    Добавляет ингредиент в заказ (к текущему элементу заказа).
+    """
+    cursor = conn.cursor()
+    try:
+        # Проверяем, существует ли этот ингредиент
+        cursor.execute("SELECT ingredient_id FROM ingredients WHERE name = ?", (ingredient_name,))
+        ingredient = cursor.fetchone()
+
+        if ingredient:
+            ingredient_id = ingredient[0]
+            cursor.execute("SELECT additional_ingredients FROM order_items WHERE order_item_id = ?", (order_item_id,))
+            existing_ingredients = cursor.fetchone()[0]
+
+            # Если ингредиенты уже есть, добавляем новый
+            if existing_ingredients:
+                updated_ingredients = f"{existing_ingredients},{ingredient_name}"
+            else:
+                updated_ingredients = ingredient_name
+
+            # Обновляем строку ингредиентов
+            cursor.execute("""
+                UPDATE order_items
+                SET additional_ingredients = ?
+                WHERE order_item_id = ?
+            """, (updated_ingredients, order_item_id))
+
+            conn.commit()
+            print(f"Ингредиент '{ingredient_name}' успешно добавлен.")
+        else:
+            print(f"Ингредиент '{ingredient_name}' не найден.")
+    except sqlite3.Error as e:
+        conn.rollback()
+        print(f"Ошибка при добавлении ингредиента в заказ: {e}")
+
