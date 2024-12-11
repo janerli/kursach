@@ -23,7 +23,6 @@ class Order(Frame):
     def __init__(self, parent, controller=None, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-        self.selected_rid = None
 
         self.configure(bg="#FFFFFF")
 

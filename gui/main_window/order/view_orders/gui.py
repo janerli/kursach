@@ -2,7 +2,7 @@ from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, Frame
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path("assets")
+ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
 
 def relative_to_assets(path: str) -> Path:
@@ -14,19 +14,19 @@ class ViewOrder(Frame):
         Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        self.configure(bg = "#CEAB83")
+        self.configure(bg="#CEAB83")
 
         self.canvas = Canvas(
             self,
-            bg = "#CEAB83",
-            height = 700,
-            width = 948,
-            bd = 0,
-            highlightthickness = 0,
-            relief = "ridge"
+            bg="#CEAB83",
+            height=700,
+            width=948,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
         )
 
-        self.canvas.place(x = 0, y = 0)
+        self.canvas.place(x=0, y=0)
         self.canvas.create_rectangle(
             20.0,
             77.0,
@@ -38,7 +38,7 @@ class ViewOrder(Frame):
         button_image_1 = PhotoImage(
             file=relative_to_assets("button_1.png"))
         button_1 = Button(
-            self.canvas,
+            self,
             image=button_image_1,
             borderwidth=0,
             highlightthickness=0,
@@ -64,7 +64,7 @@ class ViewOrder(Frame):
         button_image_2 = PhotoImage(
             file=relative_to_assets("button_2.png"))
         button_2 = Button(
-            self.canvas,
+            self,
             image=button_image_2,
             borderwidth=0,
             highlightthickness=0,
@@ -81,7 +81,7 @@ class ViewOrder(Frame):
         button_image_3 = PhotoImage(
             file=relative_to_assets("button_3.png"))
         button_3 = Button(
-            self.canvas,
+            self,
             image=button_image_3,
             borderwidth=0,
             highlightthickness=0,
@@ -94,4 +94,3 @@ class ViewOrder(Frame):
             width=73.94000244140625,
             height=70.0
         )
-

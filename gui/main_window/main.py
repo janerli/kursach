@@ -2,7 +2,10 @@ from pathlib import Path
 
 from tkinter import messagebox, Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, StringVar
 
+from gui.main_window.clients.gui import Clients
+from gui.main_window.menu.gui import Menu
 from gui.main_window.order.main import Order
+from gui.main_window.order_history.gui import OrderHistory
 from gui.main_window.statistic.gui import Statistic
 
 OUTPUT_PATH = Path(__file__).parent
@@ -55,7 +58,6 @@ class MainWindow(Toplevel):
             outline=""
         )
 
-
         image_image_1 = PhotoImage(
             file=relative_to_assets("image_1.png"))
         image_1 = self.canvas.create_image(
@@ -88,7 +90,7 @@ class MainWindow(Toplevel):
             image=button_image_2,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_2 clicked"),
+            command=lambda: self.handle_btn_press("stat"),
             relief="flat"
         )
         stats_btn.place(
@@ -105,7 +107,7 @@ class MainWindow(Toplevel):
             image=button_image_3,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_3 clicked"),
+            command=lambda: self.handle_btn_press("ord"),
             relief="flat"
         )
         order_btn.place(
@@ -122,7 +124,7 @@ class MainWindow(Toplevel):
             image=button_image_4,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_4 clicked"),
+            command=lambda: self.handle_btn_press("menu"),
             relief="flat"
         )
         menu_btn.place(
@@ -139,7 +141,7 @@ class MainWindow(Toplevel):
             image=button_image_5,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_5 clicked"),
+            command=lambda: self.handle_btn_press("cli"),
             relief="flat"
         )
         clients_btn.place(
@@ -156,7 +158,7 @@ class MainWindow(Toplevel):
             image=button_image_6,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_6 clicked"),
+            command=lambda: self.handle_btn_press("his"),
             relief="flat"
         )
         history_btn.place(
@@ -171,27 +173,24 @@ class MainWindow(Toplevel):
             "ord": Order(self),
             "his": OrderHistory(self),
             "menu": Menu(self),
-            "cli": Client(self),
+            "cli": Clients(self),
         }
+
+        self.handle_btn_press("stat")
 
         self.resizable(False, False)
         self.mainloop()
 
-        def handle_btn_press(self, caller, name):
-            # Place the sidebar on respective button
-            self.sidebar_indicator.place(x=0, y=caller.winfo_y())
+    def handle_btn_press(self, frame_key):
+        """Переключает отображение на указанный фрейм."""
 
-            # Hide all screens
-            for window in self.windows.values():
-                window.place_forget()
+        # Скрываем все окна
+        for frame in self.windows.values():
+            frame.place_forget()
 
-            # Set ucrrent Window
-            self.current_window = self.windows.get(name)
+        self.current_window = self.windows.get(frame_key)
 
             # Show the screen of the button pressed
-            self.windows[name].place(x=215, y=72, width=1013.0, height=506.0)
+        self.windows[frame_key].place(x=152, y=0, width=1100.0, height=700.0)
 
-            # Handle label change
-            current_name = self.windows.get(name)._name.split("!")[-1].capitalize()
-            self.canvas.itemconfigure(self.heading, text=current_name)
 

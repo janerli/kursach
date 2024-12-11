@@ -2,7 +2,7 @@ from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, Frame
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path("assets")
+ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
 
 def relative_to_assets(path: str) -> Path:
@@ -39,7 +39,7 @@ class AddOrder(Frame):
         button_image_1 = PhotoImage(
             file=relative_to_assets("button_1.png"))
         button_1 = Button(
-            self.canvas,
+            self,
             image=button_image_1,
             borderwidth=0,
             highlightthickness=0,
@@ -56,7 +56,7 @@ class AddOrder(Frame):
         button_image_2 = PhotoImage(
             file=relative_to_assets("button_2.png"))
         button_2 = Button(
-            self.canvas,
+            self,
             image=button_image_2,
             borderwidth=0,
             highlightthickness=0,
@@ -113,7 +113,7 @@ class AddOrder(Frame):
             image=entry_image_1
         )
         entry_1 = Entry(
-            self.canvas,
+            self,
             bd=0,
             bg="#D9D9D9",
             fg="#000716",
@@ -134,7 +134,7 @@ class AddOrder(Frame):
             image=entry_image_2
         )
         entry_2 = Entry(
-            self.canvas,
+            self,
             bd=0,
             bg="#D9D9D9",
             fg="#000716",
