@@ -1,6 +1,9 @@
 from pathlib import Path
 
-from tkinter import messagebox, Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel
+from tkinter import messagebox, Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, StringVar
+
+from gui.main_window.order.main import Order
+from gui.main_window.statistic.gui import Statistic
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
@@ -26,14 +29,17 @@ class MainWindow(Toplevel):
         Toplevel.__init__(self, *args, **kwargs)
 
         self.access_level = access_level
-        self.geometry("928x584")
-        self.configure(bg="#CEAB83")
+        self.geometry("1100x700")
+        self.configure(bg="#715E48")
+
+        self.current_window = None
+        self.current_window_label = StringVar()
 
         self.canvas = Canvas(
             self,
-            bg="#CEAB83",
-            height=584,
-            width=928,
+            bg="#715E48",
+            height=700,
+            width=1100,
             bd=0,
             highlightthickness=0,
             relief="ridge"
@@ -41,12 +47,14 @@ class MainWindow(Toplevel):
 
         self.canvas.place(x=0, y=0)
         self.canvas.create_rectangle(
-            0.0,
-            0.0,
             152.0,
-            584.0,
-            fill="#715E48",
-            outline="")
+            0.0,
+            1100.0,
+            700.0,
+            fill="#CEAB83",
+            outline=""
+        )
+
 
         image_image_1 = PhotoImage(
             file=relative_to_assets("image_1.png"))
@@ -67,8 +75,8 @@ class MainWindow(Toplevel):
             relief="flat"
         )
         admin_btn.place(
-            x=4.0,
-            y=539.0,
+            x=3.0,
+            y=656.0,
             width=45.0,
             height=44.0
         )
@@ -102,7 +110,7 @@ class MainWindow(Toplevel):
         )
         order_btn.place(
             x=0.0,
-            y=332.0,
+            y=318.0,
             width=152.0,
             height=43.0
         )
@@ -119,7 +127,7 @@ class MainWindow(Toplevel):
         )
         menu_btn.place(
             x=0.0,
-            y=256.0,
+            y=249.0,
             width=152.0,
             height=43.0
         )
@@ -136,9 +144,54 @@ class MainWindow(Toplevel):
         )
         clients_btn.place(
             x=0.0,
-            y=408.0,
+            y=387.0,
             width=152.0,
             height=43.0
         )
+
+        button_image_6 = PhotoImage(
+            file=relative_to_assets("button_6.png"))
+        history_btn = Button(
+            self.canvas,
+            image=button_image_6,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("button_6 clicked"),
+            relief="flat"
+        )
+        history_btn.place(
+            x=0.0,
+            y=456.0,
+            width=152.0,
+            height=43.0
+        )
+
+        self.windows = {
+            "stat": Statistic(self),
+            "ord": Order(self),
+            "his": OrderHistory(self),
+            "menu": Menu(self),
+            "cli": Client(self),
+        }
+
         self.resizable(False, False)
         self.mainloop()
+
+        def handle_btn_press(self, caller, name):
+            # Place the sidebar on respective button
+            self.sidebar_indicator.place(x=0, y=caller.winfo_y())
+
+            # Hide all screens
+            for window in self.windows.values():
+                window.place_forget()
+
+            # Set ucrrent Window
+            self.current_window = self.windows.get(name)
+
+            # Show the screen of the button pressed
+            self.windows[name].place(x=215, y=72, width=1013.0, height=506.0)
+
+            # Handle label change
+            current_name = self.windows.get(name)._name.split("!")[-1].capitalize()
+            self.canvas.itemconfigure(self.heading, text=current_name)
+

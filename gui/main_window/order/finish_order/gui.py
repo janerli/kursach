@@ -1,19 +1,18 @@
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel
-
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, Frame
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path("./assets")
+ASSETS_PATH = OUTPUT_PATH / Path("assets")
 
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-class FinishOrder(Toplevel):
-    def __init__(self, *args, **kwargs):
-        Toplevel.__init__(self, *args, **kwargs)
-        self.geometry("948x700")
+class FinishOrder(Frame):
+    def __init__(self, parent, controller=None, *args, **kwargs):
+        Frame.__init__(self, parent, *args, **kwargs)
         self.configure(bg = "#CEAB83")
+        self.parent = parent
 
 
         self.canvas = Canvas(
@@ -49,7 +48,7 @@ class FinishOrder(Toplevel):
             anchor="nw",
             text="Выберите пиццу для настройки ингредиентов",
             fill="#000000",
-            font=("MontserratAlternates Regular", 36 * -1)
+            font=("Montserrat Alternates Regular", 36 * -1)
         )
 
         self.canvas.create_text(
@@ -58,7 +57,7 @@ class FinishOrder(Toplevel):
             anchor="nw",
             text="Ингредиенты:",
             fill="#000000",
-            font=("MontserratAlternates Regular", 36 * -1)
+            font=("Montserrat Alternates Regular", 36 * -1)
         )
 
         self.canvas.create_text(
@@ -67,7 +66,7 @@ class FinishOrder(Toplevel):
             anchor="nw",
             text="Итоговая стоимость: 0 руб.",
             fill="#000000",
-            font=("MontserratAlternates Regular", 24 * -1)
+            font=("Montserrat Alternates Regular", 24 * -1)
         )
 
         button_image_1 = PhotoImage(
@@ -137,5 +136,4 @@ class FinishOrder(Toplevel):
             width=232.69927978515625,
             height=66.07679748535156
         )
-        self.resizable(False, False)
-        self.mainloop()
+

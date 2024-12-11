@@ -7,41 +7,42 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
 
 
-window = Tk()
+class Menu(Frame):
+    def __init__(self, parent, controller=None, *args, **kwargs):
+        Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
 
-window.geometry("948x700")
-window.configure(bg = "#CEAB83")
+        self.configure(bg = "#CEAB83")
 
 
-canvas = Canvas(
-    window,
-    bg = "#CEAB83",
-    height = 700,
-    width = 948,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
-)
+        self.canvas = Canvas(
+            self,
+            bg = "#CEAB83",
+            height = 700,
+            width = 948,
+            bd = 0,
+            highlightthickness = 0,
+            relief = "ridge"
+        )
 
-canvas.place(x = 0, y = 0)
-canvas.create_text(
-    23.0,
-    27.0,
-    anchor="nw",
-    text="Меню",
-    fill="#000000",
-    font=("MontserratAlternates Bold", 36 * -1)
-)
+        self.canvas.place(x = 0, y = 0)
+        self.canvas.create_text(
+            23.0,
+            27.0,
+            anchor="nw",
+            text="Меню",
+            fill="#000000",
+            font=("Montserrat Alternates Bold", 36 * -1)
+        )
 
-canvas.create_rectangle(
-    42.0,
-    95.0,
-    907.0,
-    666.0,
-    fill="#D9D9D9",
-    outline="")
-window.resizable(False, False)
-window.mainloop()
+        self.canvas.create_rectangle(
+            42.0,
+            95.0,
+            907.0,
+            666.0,
+            fill="#D9D9D9",
+            outline="")
+

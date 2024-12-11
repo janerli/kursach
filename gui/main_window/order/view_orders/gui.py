@@ -1,21 +1,20 @@
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, Frame
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path("./assets")
+ASSETS_PATH = OUTPUT_PATH / Path("assets")
 
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 
-class ViewOrder(Toplevel):
-    def __init__(self, *args, **kwargs):
-        Toplevel.__init__(self, *args, **kwargs)
+class ViewOrder(Frame):
+    def __init__(self, parent, controller=None, *args, **kwargs):
+        Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
 
-        self.geometry("948x700")
         self.configure(bg = "#CEAB83")
-
 
         self.canvas = Canvas(
             self,
@@ -59,7 +58,7 @@ class ViewOrder(Toplevel):
             anchor="nw",
             text="Заказы",
             fill="#000000",
-            font=("MontserratAlternates Bold", 36 * -1)
+            font=("Montserrat Alternates Bold", 36 * -1)
         )
 
         button_image_2 = PhotoImage(
@@ -95,5 +94,4 @@ class ViewOrder(Toplevel):
             width=73.94000244140625,
             height=70.0
         )
-        self.resizable(False, False)
-        self.mainloop()
+
