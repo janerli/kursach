@@ -133,7 +133,8 @@ class Login(Toplevel):
             bg="#F5F5F5",
             fg="#000716",
             highlightthickness=0,
-            show='*'
+            show='*',
+            font=("Montserrat Alternates Regular", 32 * -1)
         )
         self.password.place(
             x=589.0,
@@ -154,7 +155,8 @@ class Login(Toplevel):
             bd=0,
             bg="#F5F5F5",
             fg="#000716",
-            highlightthickness=0
+            highlightthickness=0,
+            font=("Montserrat Alternates Regular", 32 * -1)
         )
         self.username.place(
             x=585.0,

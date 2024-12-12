@@ -5,6 +5,7 @@ import logging
 from functools import wraps
 
 conn = sqlite3.connect('pizza.db')
+DB_PATH = 'pizza.db'
 # create_tables(conn)
 
 def db_connection(func):
@@ -126,19 +127,42 @@ def delete_order(conn, order_id):
         return False
 
 
+# def get_pizzas(conn):
+#     cursor = conn.cursor()
+#     try:
+#         cursor.execute("SELECT pizza_id, name, description, price, image_path, weight FROM pizzas")
+#         pizzas = [dict(row) for row in
+#                   cursor.fetchall()]
+#         return pizzas
+#     except sqlite3.OperationalError as e:
+#         print(f"Ошибка получения списка пицц: {e}")
+#         return []
+#     except Exception as e:
+#         print(f"Произошла ошибка: {e}")
+#         return []
+
 def get_pizzas(conn):
     cursor = conn.cursor()
     try:
         cursor.execute("SELECT pizza_id, name, description, price, image_path, weight FROM pizzas")
-        pizzas = [dict(row) for row in
-                  cursor.fetchall()]
+        print("Запрос выполнен успешно.")  # Добавлен отладочный вывод
+        rows = cursor.fetchall()
+        print(f"Полученные данные: {rows}")  # Добавлен отладочный вывод
+        columns = ['pizza_id', 'name', 'description', 'price', 'image_path', 'weight']
+        pizzas = []
+        for row in rows:
+            if len(row) == len(columns):
+                pizza = dict(zip(columns, row))
+                pizzas.append(pizza)
+            else:
+                print(f"Неполная строка в таблице pizzas: {row}")
         return pizzas
     except sqlite3.OperationalError as e:
         print(f"Ошибка получения списка пицц: {e}")
-        return []
+        return None  # Вернем None, чтобы обработка в load_menu работала
     except Exception as e:
-        print(f"Произошла ошибка: {e}")
-        return []
+        print(f"Произошла ошибка в get_pizzas: {e}")  # Более конкретное сообщение
+        return None
 
 
 def get_pizza_by_id(conn, pizza_id):
@@ -331,14 +355,14 @@ def get_order_history(conn, filters=None):
         return []
 
 
-def get_pizza_ingredients(conn, pizza_id):
+def get_pizza_ingredients(conn):
     """
     Получает список ингредиентов пиццы.
     """
-    query = "SELECT name FROM ingredients WHERE pizza_id = ?"
     cursor = conn.cursor()
-    cursor.execute(query, (pizza_id,))
-    return [{"name": row["name"]} for row in cursor.fetchall()]
+    cursor.execute("SELECT ingredient_id, name, quantity, price FROM ingredients")
+    columns = ['ingredient_id', 'name', 'quantity', 'price']
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
 def update_pizza_ingredients(conn, pizza_id, ingredient, action):
@@ -419,4 +443,19 @@ def add_ingredient_to_order(conn, order_item_id, ingredient_name):
     except sqlite3.Error as e:
         conn.rollback()
         print(f"Ошибка при добавлении ингредиента в заказ: {e}")
+
+def create_ingredient(conn, name, quantity, unit, price):
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO ingredients (name, quantity, unit, price) VALUES (?, ?, ?, ?)", (name, quantity, unit, price))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError: # Обработка уникальности имени
+        conn.rollback()
+        return False
+    except Exception as e:
+        conn.rollback()
+        print(f"Ошибка добавления ингредиента: {e}")
+        return False
+
 

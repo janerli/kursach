@@ -1,5 +1,8 @@
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, Frame, StringVar, messagebox
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel, Frame, StringVar, messagebox, Radiobutton, \
+    ttk
+
+from gui.main_window.order.choose_menu.gui import ChooseMenu
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
@@ -18,6 +21,12 @@ class AddOrder(Frame):
         self.user_id = StringVar()
         self.delivery_type = StringVar()
         self.address = StringVar()
+
+        self.style = ttk.Style()
+        self.style.configure('TRadiobutton',
+                             font=("Montserrat Alternates Regular", 32 * -1),
+                             background="#CEAB83", highlightthickness=0,
+                             focuscolor="#CEAB83", activebackground="#CEAB83")
 
         self.canvas = Canvas(
             self,
@@ -46,7 +55,7 @@ class AddOrder(Frame):
             image=self.button_image_1,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
+            command=lambda: self.next_step(),
             relief="flat"
         )
         button_1.place(
@@ -63,7 +72,7 @@ class AddOrder(Frame):
             image=self.button_image_2,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_2 clicked"),
+            command=lambda: self.parent.navigate("view"),
             relief="flat"
         )
         button_2.place(
@@ -105,8 +114,26 @@ class AddOrder(Frame):
             247.0,
             587.0,
             309.0,
-            fill="#D9D9D9",
+            fill="#CEAB83",
             outline="")
+
+        self.radio1 = ttk.Radiobutton(self.canvas, text='Доставка',
+                                  variable=self.delivery_type, value='Доставка',
+                                  style='TRadiobutton',
+                                  command=self.on_delivery_type_change)
+
+        self.canvas.create_window(
+            483.5, 278,
+            window=self.radio1)
+
+        self.radio2 = ttk.Radiobutton(self.canvas, text='Самовывоз',
+                                      variable=self.delivery_type, value='Самовывоз',
+                                      style='TRadiobutton',
+                                      command=self.on_delivery_type_change)
+
+        self.canvas.create_window(
+            767.5, 278.0,
+            window=self.radio2)
 
         self.entry_image_1 = PhotoImage(
             file=relative_to_assets("entry_1.png"))
@@ -115,20 +142,23 @@ class AddOrder(Frame):
             375.0,
             image=self.entry_image_1
         )
-        address = Entry(
+        self.add = Entry(
             self,
             textvariable=self.address,
             bd=0,
             bg="#D9D9D9",
             fg="#000716",
-            highlightthickness=0
+            highlightthickness=0,
+            font=("Montserrat Alternates Regular", 24 * -1)
         )
-        address.place(
+        self.add.place(
             x=220.0,
             y=344.0,
             width=444.0,
             height=60.0
         )
+        if self.delivery_type.get() == 'Самовывоз':
+            self.add.configure(state='disabled', bg='#737373')
 
         self.entry_image_2 = PhotoImage(
             file=relative_to_assets("entry_2.png"))
@@ -143,7 +173,8 @@ class AddOrder(Frame):
             bd=0,
             bg="#D9D9D9",
             fg="#000716",
-            highlightthickness=0
+            highlightthickness=0,
+            font=("Montserrat Alternates Regular", 24 * -1)
         )
         client.place(
             x=320.0,
@@ -157,14 +188,34 @@ class AddOrder(Frame):
             247.0,
             871.0,
             309.0,
-            fill="#D9D9D9",
+            fill="#CEAB83",
             outline="")
+
+
 
     def next_step(self):
         """Переход к следующему этапу."""
+
         if not self.user_id.get() or not self.delivery_type.get() or not self.address.get():
             messagebox.showerror("Ошибка", "Все поля должны быть заполнены!")
             return
 
-        self.parent.navigate("choose")
+        self.place_forget()
+
+        user_id = self.user_id.get()
+        delivery_type = self.delivery_type.get()
+        address = self.address.get()
+
+        # self.current_window = ChooseMenu(self, user_id, delivery_type, address)
+        # self.current_window.place(x=0, y=0, width=1100.0, height=700.0)
+        #
+        # # self.current_window.tkraise()
+        #
+        self.parent.navigate("choose", self.user_id.get(), self.delivery_type.get(), self.address.get())
        #  ChooseMenu(user_id=self.user_id.get(), delivery_type=self.delivery_type.get(), address=self.address.get())
+    def on_delivery_type_change(self):
+        # Убедитесь, что self.address доступен в методе
+        if self.delivery_type.get() == 'Самовывоз':
+            self.add.config(state='disabled')
+        else:
+            self.add.config(state='normal', bg='#D9D9D9')
