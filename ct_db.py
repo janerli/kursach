@@ -1,5 +1,8 @@
 import sqlite3
 
+from database import conn
+
+
 def delete_tables(conn):
     cursor = conn.cursor()
     cursor.execute('''DROP TABLE IF EXISTS users''')
@@ -61,8 +64,6 @@ def create_tables(conn):
             CREATE TABLE IF NOT EXISTS ingredients (
                 ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT UNIQUE NOT NULL,
-                quantity INTEGER NOT NULL,
-                unit TEXT DEFAULT 'граммы',
                 price REAL NOT NULL
             )
         """)
@@ -70,8 +71,12 @@ def create_tables(conn):
         cursor.execute("""
                     CREATE TABLE IF NOT EXISTS orders (
                         order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        client_id INTEGER NOT NULL,
+                        order_date TEXT DEFAULT CURRENT_TIMESTAMP,
+                        total_price REAL NOT NULL,
                         delivery TEXT NOT NULL CHECK (delivery IN ('доставка', 'самовывоз')),
-                        status TEXT NOT NULL CHECK (status IN ('новый', 'в работе', 'готов', 'завершен', 'отменен'))
+                        status TEXT NOT NULL CHECK (status IN ('новый', 'в работе', 'готов', 'завершен', 'отменен')),
+                        FOREIGN KEY (client_id) REFERENCES clients(client_id)
                     )
                 """)
 
@@ -107,3 +112,6 @@ def create_tables(conn):
     except Exception as e:
         conn.rollback()
         print(f"Произошла ошибка: {e}")
+
+
+create_tables(conn)

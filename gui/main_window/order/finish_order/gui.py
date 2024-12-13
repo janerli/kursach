@@ -1,7 +1,7 @@
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, StringVar, Listbox, messagebox, END
 
-from database import update_pizza_ingredients, get_pizza_ingredients, conn
+from database import update_pizza_ingredients, get_pizza_ingredients, conn, add_ingredient_to_order, save_order
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
@@ -195,13 +195,13 @@ class FinishOrder(Frame):
 
     def add_ingredient(self):
         """Добавляет ингредиент в пиццу."""
-        ingredient = self.selected_ingredient.get().strip()
+        ingredient = self.ingredient_listbox.curselection()
         if not ingredient:
             messagebox.showerror("Ошибка", "Введите название ингредиента.")
             return
 
         try:
-            update_pizza_ingredients(self.selected_pizza["pizza_id"], ingredient, action="add")
+            add_ingredient_to_order(conn, self.selected_pizza["pizza_id"], ingredient)
             self.load_ingredients()
             messagebox.showinfo("Успех", "Ингредиент добавлен.")
         except Exception as e:
@@ -210,7 +210,7 @@ class FinishOrder(Frame):
 
     def finish_order(self):
         """Завершает заказ."""
-        # Логика для сохранения заказа
+        save_order(conn, self.user_id, self.delivery_type, self.address, self.order_items)
         try:
             messagebox.showinfo("Успех", "Заказ успешно оформлен!")
             # self.destroy()

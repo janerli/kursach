@@ -322,10 +322,12 @@ def get_top_3_pizzas(conn):
         print(f"Произошла ошибка: {e}")
         return []
 
+
 def get_order_history(conn, filters=None):
     """
     Возвращает историю заказов с применением фильтров.
     """
+    conn.row_factory = sqlite3.Row
     filters = filters or {}
     query = """
         SELECT oh.history_id, oh.order_id, oh.client_id, oh.order_date, oh.total_price
@@ -334,22 +336,23 @@ def get_order_history(conn, filters=None):
     """
     params = []
 
+    if "order_id" in filters:
+        query += " AND oh.order_id = ?"
+        params.append(filters["order_id"])
     if "client_id" in filters:
         query += " AND oh.client_id = ?"
         params.append(filters["client_id"])
     if "order_date" in filters:
         query += " AND oh.order_date = ?"
         params.append(filters["order_date"])
-    if "status" in filters:
-        query += ''' AND EXISTS (
-            SELECT 1 FROM orders o WHERE o.order_id = oh.order_id AND o.status = ?
-        )'''
-        params.append(filters["status"])
+    if "total_price" in filters:
+        query += " AND oh.total_price = ?"
+        params.append(filters["total_price"])
 
     cursor = conn.cursor()
     try:
         cursor.execute(query, params)
-        return cursor.fetchall()
+        return [dict(row) for row in cursor.fetchall()]
     except sqlite3.Error as e:
         print(f"Ошибка при получении истории заказов: {e}")
         return []
@@ -360,7 +363,7 @@ def get_pizza_ingredients(conn):
     Получает список ингредиентов пиццы.
     """
     cursor = conn.cursor()
-    cursor.execute("SELECT ingredient_id, name, quantity, price FROM ingredients")
+    cursor.execute("SELECT ingredient_id, name, price FROM ingredients")
     columns = ['ingredient_id', 'name', 'quantity', 'price']
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
@@ -457,5 +460,51 @@ def create_ingredient(conn, name, quantity, unit, price):
         conn.rollback()
         print(f"Ошибка добавления ингредиента: {e}")
         return False
+
+def update_order_status(conn, order_id, new_status):
+    """
+    Обновляет статус заказа.
+    """
+    cursor = conn.cursor()
+    cursor.execute("UPDATE orders SET status = ? WHERE order_id = ?", (new_status, order_id))
+
+def move_order_to_history(conn, order_id):
+    """
+    Перемещает заказ в таблицу order_history.
+    """
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO order_history (order_id, client_id, order_date, total_price)
+        SELECT order_id, client_id, DATE('now'), total_price
+        FROM orders
+        WHERE order_id = ?
+    """, (order_id,))
+    cursor.execute("DELETE FROM orders WHERE order_id = ?", (order_id,))
+
+def get_all_orders(conn):
+    """
+    Возвращает список всех заказов.
+    """
+    cursor = conn.cursor()
+    cursor.execute("SELECT order_id, delivery, status FROM orders")
+    return cursor.fetchall()
+
+def get_order_details(conn, order_id):
+    """
+    Получает детали заказа из таблицы order_items по order_id.
+    :param conn: Соединение с базой данных.
+    :param order_id: Идентификатор заказа.
+    :return: Список строк с деталями заказа.
+    """
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT order_item_id, pizza_id, quantity, additional_ingredients
+        FROM order_items
+        WHERE order_id = ?
+    """, (order_id,))
+    return cursor.fetchall()
+
+
+
 
 
