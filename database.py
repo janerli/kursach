@@ -4,7 +4,7 @@ import json
 import logging
 from functools import wraps
 
-conn = sqlite3.connect(r'D:\damn\pycharm projects\kursach\pizza.db')
+conn = sqlite3.connect('pizza.db')
 DB_PATH = 'pizza.db'
 # create_tables(conn)
 
@@ -31,11 +31,12 @@ def db_connection(func):
 def add_user(conn, username, password, access_level_id, first_name=None, last_name=None, middle_name=None):
     """Добавляет нового пользователя."""
     cursor = conn.cursor()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     try:
         cursor.execute("""
             INSERT INTO users (username, password, access_level_id, first_name, last_name, middle_name)
             VALUES (?, ?, ?, ?, ?, ?)
-        """, (username, password, access_level_id, first_name, last_name, middle_name))
+        """, (username, hashed_password, access_level_id, first_name, last_name, middle_name))
         conn.commit()
     except sqlite3.IntegrityError:
         print(f"Пользователь '{username}' уже существует.")
@@ -48,9 +49,9 @@ def check_login(conn, username, password):
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = cursor.fetchone()
-    conn.close()
+    # conn.close()
     if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
-        return user['user_id'], user['access_level']
+        return user['user_id'], user['access_level_id']
     else:
         return None, None
 

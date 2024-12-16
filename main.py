@@ -17,7 +17,7 @@ def quit_me():
 
 if __name__ == "__main__":
     create_tables(conn)
-    #Login()
-    mainWindow(2)
+    Login()
+    #mainWindow(1)
     quit_me()
     root.mainloop()

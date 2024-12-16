@@ -41,6 +41,7 @@ class Menu(Frame):
         # Кэш для изображений
         self.image_cache = {}
         self.access_level = user_session.session.get_access_level()
+        print(f"Уровень доступа: {self.access_level}")
 
         # Создаём интерфейс
         self.create_widgets()
