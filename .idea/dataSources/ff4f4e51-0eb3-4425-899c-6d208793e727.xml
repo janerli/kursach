@@ -499,7 +499,7 @@
     </routine>
     <schema id="191" parent="1" name="main">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-12-12.23:49:15</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-12-16.01:55:39</LastIntrospectionLocalTimestamp>
     </schema>
     <argument id="192" parent="16">
       <ArgumentDirection>R</ArgumentDirection>
@@ -1762,10 +1762,10 @@
       <Primary>1</Primary>
     </key>
     <check id="599" parent="560">
-      <Predicate>delivery IN (&apos;доставка&apos;, &apos;самовывоз&apos;)</Predicate>
+      <Predicate>&quot;delivery&quot; IN (&apos;доставка&apos;, &apos;самовывоз&apos;)</Predicate>
     </check>
     <check id="600" parent="560">
-      <Predicate>status IN (&apos;новый&apos;, &apos;в работе&apos;, &apos;готов&apos;, &apos;завершен&apos;, &apos;отменен&apos;)</Predicate>
+      <Predicate>&quot;status&quot; IN (&apos;новый&apos;, &apos;в работе&apos;, &apos;готов&apos;, &apos;завершен&apos;, &apos;отменен&apos;)</Predicate>
     </check>
     <column id="601" parent="560" name="order_id">
       <AutoIncrement>1</AutoIncrement>
@@ -1773,152 +1773,153 @@
       <StoredType>INTEGER|0s</StoredType>
     </column>
     <column id="602" parent="560" name="client_id">
-      <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>INTEGER|0s</StoredType>
     </column>
     <column id="603" parent="560" name="order_date">
-      <NotNull>1</NotNull>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>3</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
     <column id="604" parent="560" name="total_price">
-      <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>REAL|0s</StoredType>
     </column>
-    <column id="605" parent="560" name="delivery">
-      <NotNull>1</NotNull>
+    <column id="605" parent="560" name="address">
       <Position>5</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="606" parent="560" name="status">
-      <NotNull>1</NotNull>
+    <column id="606" parent="560" name="delivery">
       <Position>6</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <foreign-key id="607" parent="560">
+    <column id="607" parent="560" name="status">
+      <DefaultExpression>&apos;новый&apos;</DefaultExpression>
+      <Position>7</Position>
+      <StoredType>TEXT|0s</StoredType>
+    </column>
+    <foreign-key id="608" parent="560">
       <ColNames>client_id</ColNames>
       <RefColNames>client_id</RefColNames>
       <RefTableName>clients</RefTableName>
     </foreign-key>
-    <key id="608" parent="560">
+    <key id="609" parent="560">
       <ColNames>order_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="609" parent="561" name="pizza_id">
+    <column id="610" parent="561" name="pizza_id">
       <AutoIncrement>1</AutoIncrement>
       <Position>1</Position>
       <StoredType>INTEGER|0s</StoredType>
     </column>
-    <column id="610" parent="561" name="name">
+    <column id="611" parent="561" name="name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="611" parent="561" name="description">
+    <column id="612" parent="561" name="description">
       <Position>3</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="612" parent="561" name="price">
+    <column id="613" parent="561" name="price">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>REAL|0s</StoredType>
     </column>
-    <column id="613" parent="561" name="image_path">
+    <column id="614" parent="561" name="image_path">
       <Position>5</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="614" parent="561" name="weight">
+    <column id="615" parent="561" name="weight">
       <Position>6</Position>
       <StoredType>REAL|0s</StoredType>
     </column>
-    <index id="615" parent="561" name="sqlite_autoindex_pizzas_1">
+    <index id="616" parent="561" name="sqlite_autoindex_pizzas_1">
       <ColNames>name</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="616" parent="561">
+    <key id="617" parent="561">
       <ColNames>pizza_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="617" parent="561">
+    <key id="618" parent="561">
       <ColNames>name</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_pizzas_1</UnderlyingIndexName>
     </key>
-    <column id="618" parent="562" name="type">
+    <column id="619" parent="562" name="type">
       <Position>1</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="619" parent="562" name="name">
+    <column id="620" parent="562" name="name">
       <Position>2</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="620" parent="562" name="tbl_name">
+    <column id="621" parent="562" name="tbl_name">
       <Position>3</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="621" parent="562" name="rootpage">
+    <column id="622" parent="562" name="rootpage">
       <Position>4</Position>
       <StoredType>INT|0s</StoredType>
     </column>
-    <column id="622" parent="562" name="sql">
+    <column id="623" parent="562" name="sql">
       <Position>5</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="623" parent="563" name="name">
+    <column id="624" parent="563" name="name">
       <Position>1</Position>
     </column>
-    <column id="624" parent="563" name="seq">
+    <column id="625" parent="563" name="seq">
       <Position>2</Position>
     </column>
-    <column id="625" parent="564" name="user_id">
+    <column id="626" parent="564" name="user_id">
       <AutoIncrement>1</AutoIncrement>
       <Position>1</Position>
       <StoredType>INTEGER|0s</StoredType>
     </column>
-    <column id="626" parent="564" name="first_name">
+    <column id="627" parent="564" name="first_name">
       <Position>2</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="627" parent="564" name="last_name">
+    <column id="628" parent="564" name="last_name">
       <Position>3</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="628" parent="564" name="middle_name">
+    <column id="629" parent="564" name="middle_name">
       <Position>4</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="629" parent="564" name="username">
+    <column id="630" parent="564" name="username">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="630" parent="564" name="password">
+    <column id="631" parent="564" name="password">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="631" parent="564" name="access_level_id">
+    <column id="632" parent="564" name="access_level_id">
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>INTEGER|0s</StoredType>
     </column>
-    <foreign-key id="632" parent="564">
+    <foreign-key id="633" parent="564">
       <ColNames>access_level_id</ColNames>
       <RefColNames>access_level_id</RefColNames>
       <RefTableName>access_levels</RefTableName>
     </foreign-key>
-    <index id="633" parent="564" name="sqlite_autoindex_users_1">
+    <index id="634" parent="564" name="sqlite_autoindex_users_1">
       <ColNames>username</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="634" parent="564">
+    <key id="635" parent="564">
       <ColNames>user_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="635" parent="564">
+    <key id="636" parent="564">
       <ColNames>username</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_users_1</UnderlyingIndexName>
     </key>

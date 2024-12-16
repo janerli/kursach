@@ -248,6 +248,7 @@ class ViewOrder(Frame):
         # Загрузка данных о заказе с использованием функции из database.py
         try:
             rows = get_order_details(conn, order_id=order_id)
+            print("Детали заказа:", rows)  # Для отладки
             for row in rows:
                 details_tree.insert("", "end", values=row)
         except Exception as e:

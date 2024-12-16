@@ -9,10 +9,15 @@ from gui.main_window.main import mainWindow
 
 root = tk.Tk()
 root.withdraw()
+def quit_me():
+
+    root.quit()
+    root.destroy()
 
 
 if __name__ == "__main__":
     create_tables(conn)
-    # Login()
-    mainWindow('admin')
+    #Login()
+    mainWindow(2)
+    quit_me()
     root.mainloop()

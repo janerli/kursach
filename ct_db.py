@@ -74,8 +74,9 @@ def create_tables(conn):
                         client_id INTEGER NOT NULL,
                         order_date TEXT DEFAULT CURRENT_TIMESTAMP,
                         total_price REAL NOT NULL,
+                        address TEXT NOT NULL,
                         delivery TEXT NOT NULL CHECK (delivery IN ('доставка', 'самовывоз')),
-                        status TEXT NOT NULL CHECK (status IN ('новый', 'в работе', 'готов', 'завершен', 'отменен')),
+                        status TEXT NOT NULL CHECK (status IN ('новый', 'в работе', 'готов', 'завершен', 'отменен')) DEFAULT 'новый',
                         FOREIGN KEY (client_id) REFERENCES clients(client_id)
                     )
                 """)
@@ -98,7 +99,7 @@ def create_tables(conn):
                 order_id INTEGER NOT NULL,
                 pizza_id INTEGER NOT NULL,
                 quantity INTEGER NOT NULL,
-                additional_ingredients TEXT,
+                additional_ingredients JSON,
                 FOREIGN KEY (order_id) REFERENCES orders(order_id),
                 FOREIGN KEY (pizza_id) REFERENCES pizzas(pizza_id)
             )

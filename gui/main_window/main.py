@@ -20,6 +20,7 @@ def mainWindow(access_level):
     MainWindow(access_level)
 
 
+
 class MainWindow(Toplevel):
 
     def open_admin_panel(self):
@@ -34,6 +35,7 @@ class MainWindow(Toplevel):
         self.access_level = access_level
         self.geometry("1100x700")
         self.configure(bg="#715E48")
+        self.title("Chozabretta")
 
         self.current_window = None
         self.current_window_label = StringVar()
@@ -179,6 +181,7 @@ class MainWindow(Toplevel):
         self.handle_btn_press("stat")
 
         self.resizable(False, False)
+        self.protocol("WM_DELETE_WINDOW", self.quit_me)
         self.mainloop()
 
     def handle_btn_press(self, frame_key):
@@ -190,7 +193,10 @@ class MainWindow(Toplevel):
 
         self.current_window = self.windows.get(frame_key)
 
-            # Show the screen of the button pressed
         self.windows[frame_key].place(x=152, y=0, width=1100.0, height=700.0)
+
+    def quit_me(self):
+        self.quit()
+        self.destroy()
 
 

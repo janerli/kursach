@@ -27,14 +27,15 @@ class Order(Frame):
         self.configure(bg="#FFFFFF")
 
         self.user_id = None
+        self.order_id = None
         self.delivery_type = None
         self.address = None
+        self.total_price = None
         self.order_items = dict()
 
-        # Loop through windows and place them
         self.windows = {
             "view": ViewOrder(self),
-            "finish": FinishOrder(self, self.user_id, self.delivery_type, self.address, self.order_items),
+            "finish": FinishOrder(self, self.order_id, self.user_id, self.delivery_type, self.address, self.order_items, self.total_price),
             "add": AddOrder(self),
             "choose": ChooseMenu(self, self.user_id, self.delivery_type, self.address)
         }
@@ -45,7 +46,6 @@ class Order(Frame):
         self.current_window.tkraise()
 
     def navigate(self, name, *args):
-        # Hide all screens
         for window in self.windows.values():
             window.place_forget()
 
@@ -55,5 +55,4 @@ class Order(Frame):
             self.windows["finish"] = FinishOrder(self, *args)
         # self.windows[name] = self.windows.get(name)
 
-        # Show the screen of the button pressed
         self.windows[name].place(x=0, y=0, width=1100.0, height=700.0)

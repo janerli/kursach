@@ -1,6 +1,8 @@
 from pathlib import Path
 
 from tkinter import Toplevel, Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
+
+import user_session
 from ..main_window.main import mainWindow
 from database import conn
 import database
@@ -13,6 +15,7 @@ ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
+
 class Login(Toplevel):
 
     def on_login(self):
@@ -21,6 +24,7 @@ class Login(Toplevel):
         user_id, access_level = database.check_login(conn, username, password)
         if user_id:
             self.destroy()
+            user_session.session.set_access_level(access_level)
             mainWindow(access_level)
             return
         else:

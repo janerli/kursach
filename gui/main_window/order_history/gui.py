@@ -91,7 +91,8 @@ class OrderHistory(Frame):
             bd=0,
             bg="#D9D9D9",
             fg="#000716",
-            highlightthickness=0
+            highlightthickness=0,
+            font=("Montserrat Alternates Regular", 24 * -1)
         )
         order_en.place(
             x=170.0,
@@ -113,7 +114,8 @@ class OrderHistory(Frame):
             bd=0,
             bg="#D9D9D9",
             fg="#000716",
-            highlightthickness=0
+            highlightthickness=0,
+            font=("Montserrat Alternates Regular", 24 * -1)
         )
         total_en.place(
             x=607.0,
@@ -135,7 +137,8 @@ class OrderHistory(Frame):
             bd=0,
             bg="#D9D9D9",
             fg="#000716",
-            highlightthickness=0
+            highlightthickness=0,
+            font=("Montserrat Alternates Regular", 24 * -1)
         )
         date_en.place(
             x=607.0,
@@ -151,14 +154,15 @@ class OrderHistory(Frame):
             117.0,
             image=self.entry_image_4
         )
-        entry_4 = Entry(
+        client_en = Entry(
             self.canvas,
             bd=0,
             bg="#D9D9D9",
             fg="#000716",
-            highlightthickness=0
+            highlightthickness=0,
+            font=("Montserrat Alternates Regular", 24 * -1),
         )
-        entry_4.place(
+        client_en.place(
             x=170.0,
             y=94.0,
             width=129.0,

@@ -14,16 +14,6 @@ class AddIngredientWindow(tk.Toplevel):
         self.name_entry = ttk.Entry(self)
         self.name_entry.grid(row=0, column=1, padx=5, pady=5)
 
-        self.quantity_label = ttk.Label(self, text="Количество:")
-        self.quantity_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-        self.quantity_entry = ttk.Entry(self)
-        self.quantity_entry.grid(row=1, column=1, padx=5, pady=5)
-
-        self.unit_label = ttk.Label(self, text="Единица измерения:")
-        self.unit_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-        self.unit_entry = ttk.Entry(self)
-        self.unit_entry.insert(0, "граммы") # Значение по умолчанию
-        self.unit_entry.grid(row=2, column=1, padx=5, pady=5)
 
 
         self.price_label = ttk.Label(self, text="Цена:")
@@ -37,18 +27,12 @@ class AddIngredientWindow(tk.Toplevel):
     def add_ingredient(self):
         name = self.name_entry.get()
         try:
-            quantity = int(self.quantity_entry.get())
-        except ValueError:
-            messagebox.showerror("Ошибка", "Количество должно быть целым числом.")
-            return
-        unit = self.unit_entry.get()
-        try:
             price = float(self.price_entry.get())
         except ValueError:
             messagebox.showerror("Ошибка", "Цена должна быть числом.")
             return
 
-        if database.create_ingredient(database.conn, name, quantity, unit, price):
+        if database.create_ingredient(database.conn, name, price):
             messagebox.showinfo("Успех", "Ингредиент добавлен.")
             self.destroy()
         else:

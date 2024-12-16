@@ -1,8 +1,9 @@
 import sqlite3
+from datetime import datetime
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, IntVar, ttk, messagebox, Label
 
-from database import get_pizzas
+from database import get_pizzas, conn
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
@@ -232,9 +233,25 @@ class ChooseMenu(Frame):
         if not self.order_items:
             messagebox.showerror("Ошибка", "Заказ не может быть пустым!")
             return
-        self.place_forget()
+
         # Закрываем текущее окно
-        self.parent.navigate("finish", self.user_id, self.delivery_type, self.address, self.order_items)
+        from database import save_order_with_items
+        try:
+            # Сохраняем заказ в базу данных
+            order_id = save_order_with_items(
+                client_id=self.user_id,
+                order_date=datetime.now(),
+                total_price=self.total_price,
+                delivery='доставка',
+                status="новый",
+                items=self.order_items
+            )
+            self.parent.navigate("finish", order_id, self.user_id, self.delivery_type, self.address,
+                                 self.order_items, self.total_price)
+            self.place_forget()
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось сохранить заказ: {e}")
+
 
         # Переход к следующему этапу
         # AdditionalSettingsWindow(self.user_id, self.delivery_type, self.address, self.order_items)

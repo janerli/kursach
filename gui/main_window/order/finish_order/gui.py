@@ -1,7 +1,8 @@
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, StringVar, Listbox, messagebox, END
 
-from database import update_pizza_ingredients, get_pizza_ingredients, conn, add_ingredient_to_order, save_order
+from database import update_pizza_ingredients, get_pizza_ingredients, conn, add_ingredient_to_order, save_order, \
+    update_order_items
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
@@ -11,17 +12,22 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 class FinishOrder(Frame):
-    def __init__(self, parent, user_id, delivery_type, address, order_items, controller=None, *args, **kwargs):
+    def __init__(self, parent, order_id, user_id, delivery_type, address, order_items, total_price, controller=None, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
         self.configure(bg = "#CEAB83")
         self.parent = parent
 
+
         # Сохраненные данные
         self.user_id = user_id
+        self.order_id = order_id
         self.delivery_type = delivery_type
         self.address = address
         self.order_items = order_items
+        self.total_price = total_price
         self.selected_pizza = None
+        # self.order_id = self.save_order()
+
 
         # Переменные
         self.selected_ingredient = StringVar()
@@ -38,13 +44,6 @@ class FinishOrder(Frame):
         )
 
         self.canvas.place(x = 0, y = 0)
-        # self.canvas.create_rectangle(
-        #     19.0,
-        #     105.0,
-        #     484.0,
-        #     328.0,
-        #     fill="#D9D9D9",
-        #     outline="") # first table
 
         self.canvas.create_rectangle(
             21.0,
@@ -114,23 +113,6 @@ class FinishOrder(Frame):
             height=54.0
         )
 
-        # self.button_image_2 = PhotoImage(
-        #     file=relative_to_assets("button_2.png"))
-        # minus = Button(
-        #     self.canvas,
-        #     image=self.button_image_2,
-        #     borderwidth=0,
-        #     highlightthickness=0,
-        #     command=lambda: print("button_2 clicked"),
-        #     relief="flat"
-        # )
-        # minus.place(
-        #     x=734.0,
-        #     y=473.0,
-        #     width=57.04225540161133,
-        #     height=54.0
-        # )
-
         self.button_image_3 = PhotoImage(
             file=relative_to_assets("button_3.png"))
         choose_btn = Button(
@@ -165,10 +147,18 @@ class FinishOrder(Frame):
             height=66.07679748535156
         )
 
+
     def load_pizzas(self):
         """Загружает список пицц из текущего заказа."""
         for item in self.order_items:
             self.pizza_listbox.insert("end", f"{item['name']} (x{item['quantity']})")
+
+    def update_orders(self):
+
+        for item in self.order_items:
+            pizza_id = item["pizza_id"]
+            quantity = item["quantity"]
+            update_order_items(conn, self.order_id, pizza_id, quantity)
 
     def select_pizza(self):
         """Выбирает пиццу для редактирования."""
@@ -195,24 +185,28 @@ class FinishOrder(Frame):
 
     def add_ingredient(self):
         """Добавляет ингредиент в пиццу."""
-        ingredient = self.ingredient_listbox.curselection()
-        if not ingredient:
+        selected_index = self.ingredient_listbox.curselection()
+        if not selected_index:
             messagebox.showerror("Ошибка", "Введите название ингредиента.")
             return
 
+        ingredient_name = self.ingredient_listbox.get(selected_index[0])
         try:
-            add_ingredient_to_order(conn, self.selected_pizza["pizza_id"], ingredient)
+            add_ingredient_to_order(conn, self.order_id, self.selected_pizza["pizza_id"], ingredient_name)
             self.load_ingredients()
             messagebox.showinfo("Успех", "Ингредиент добавлен.")
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось добавить ингредиент: {e}")
 
 
+
     def finish_order(self):
         """Завершает заказ."""
-        save_order(conn, self.user_id, self.delivery_type, self.address, self.order_items)
+        # save_order(conn=conn, client_id=self.user_id, total_price=self.total_price, delivery='доставка', address=self.address, order_items=self.order_items)
         try:
             messagebox.showinfo("Успех", "Заказ успешно оформлен!")
+            self.place_forget()
+            self.parent.navigate("view")
             # self.destroy()
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось завершить заказ: {e}")
