@@ -182,7 +182,7 @@ class Menu(Frame):
             return
 
         try:
-            pizzas = search_pizzas_by_name(conn, search_term.lower())
+            pizzas = search_pizzas_by_name(conn, search_term)
             self.load_menu(pizzas)
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось выполнить поиск: {e}")

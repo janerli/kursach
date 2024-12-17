@@ -241,7 +241,7 @@ class ViewOrder(Frame):
         details_window = Toplevel(self)
         details_window.title(f"Детали заказа {order_id}")
         details_window.geometry("700x300")
-        details_window.ic
+
 
         # Создаем Treeview для отображения деталей заказа
 
