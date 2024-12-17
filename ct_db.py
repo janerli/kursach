@@ -115,4 +115,4 @@ def create_tables(conn):
         print(f"Произошла ошибка: {e}")
 
 
-create_tables(conn)
+# create_tables(conn)

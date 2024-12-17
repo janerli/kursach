@@ -1,6 +1,6 @@
 import sqlite3
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, ttk
 from tkinter.ttk import Treeview
 
 from database import conn
@@ -33,20 +33,29 @@ class Clients(Frame):
         )
 
         self.canvas.place(x = 0, y = 0)
+
+        style = ttk.Style()
+        style.configure('mystyle2.Treeview', rowheight=50,font=('Montserrat Alternates', 9))
+        style.configure('mystyle2.Treeview.Heading',
+                        background='#715E48',
+                        font=('Montserrat Alternates Bold', 11),
+                        foreground='black')
+        style.configure('mystyle2.Treeview.Cell', wraplength=230)
+
         self.tree = Treeview(self, columns=("client_id", "first_name", "last_name", "middle_name", "phone", "address"),
-                             show="headings")
+                             show="headings", style='mystyle2.Treeview')
         self.tree.heading("client_id", text="ID")
         self.tree.heading("first_name", text="Имя")
         self.tree.heading("last_name", text="Фамилия")
         self.tree.heading("middle_name", text="Отчество")
         self.tree.heading("phone", text="Телефон")
         self.tree.heading("address", text="Адрес")
-        self.tree.column("client_id", width=50, anchor="center")
+        self.tree.column("client_id", width=20, anchor="center")
         self.tree.column("first_name", width=100, anchor="center")
         self.tree.column("last_name", width=100, anchor="center")
         self.tree.column("middle_name", width=100, anchor="center")
         self.tree.column("phone", width=120, anchor="center")
-        self.tree.column("address", width=200, anchor="center")
+        self.tree.column("address", width=230, anchor="w")
         self.tree.place(x=42.0, y=95.0, width=865.0, height=571.0)
         self.load_clients()
 

@@ -42,7 +42,15 @@ class ChooseMenu(Frame):
 
         self.canvas.place(x = 0, y = 0)
 
-        self.menu_table = ttk.Treeview(self.canvas, columns=["id", "name", "price"], show="headings", height=10)
+        style = ttk.Style()
+        style.configure('mystyle4.Treeview', font=('Montserrat Alternates', 9))
+        style.configure('mystyle4.Treeview.Heading',
+                        background='#715E48',
+                        font=('Montserrat Alternates Bold', 11),
+                        foreground='black')
+
+        self.menu_table = ttk.Treeview(self.canvas, columns=["id", "name", "price"], show="headings", height=10,
+                                       style='mystyle4.Treeview')
         self.menu_table.heading("id", text="ID")
         self.menu_table.heading("name", text="Название")
         self.menu_table.heading("price", text="Цена")
@@ -55,7 +63,8 @@ class ChooseMenu(Frame):
             height=197.0,)
         self.load_menu()
 
-        self.order_table = ttk.Treeview(self.canvas, columns=["name", "quantity", "price"], show="headings", height=5)
+        self.order_table = ttk.Treeview(self.canvas, columns=["name", "quantity", "price"],
+                                        show="headings", height=5, style='mystyle4.Treeview')
         self.order_table.heading("name", text="Название")
         self.order_table.heading("quantity", text="Количество")
         self.order_table.heading("price", text="Цена")

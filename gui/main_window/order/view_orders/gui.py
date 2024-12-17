@@ -1,6 +1,6 @@
 from pathlib import Path
 from tkinter import Canvas, Entry, Button, PhotoImage, Toplevel, Frame, StringVar, messagebox, \
-    Label
+    Label, ttk
 from tkinter.ttk import Scrollbar, Combobox, Treeview
 
 from database import update_order_status, move_order_to_history, get_all_orders, conn, get_order_details
@@ -41,7 +41,14 @@ class ViewOrder(Frame):
             fill="#D9D9D9",
             outline="")
 
-        self.tree = Treeview(self, columns=("order_id", "delivery", "status"), show="headings")
+        style = ttk.Style()
+        style.configure('mystyle1.Treeview', font=('Montserrat Alternates', 9))
+        style.configure('mystyle1.Treeview.Heading',
+                         background='#715E48',
+                         font=('Montserrat Alternates Bold', 11),
+                         foreground='black')
+
+        self.tree = Treeview(self, columns=("order_id", "delivery", "status"), show="headings", style='mystyle1.Treeview')
         self.tree.heading("order_id", text="ID Заказа")
         self.tree.heading("delivery", text="Тип доставки")
         self.tree.heading("status", text="Статус")
@@ -149,14 +156,18 @@ class ViewOrder(Frame):
     def open_status_window(self):
         """Открывает окно изменения статуса заказа."""
         status_window = Toplevel(self)
+        status_window.iconphoto(False, PhotoImage(file='D:/damn/pycharm projects/kursach/gui/main_window/assets/image_1.png'))
         status_window.title("Изменить статус заказа")
         status_window.geometry("300x200")
+        status_window.configure(background="#f0f4fc")
 
-        Label(status_window, text="Номер заказа:").pack(pady=10)
+        Label(status_window, text="Номер заказа:", background='#f0f4fc', foreground='black',
+              font=('Montserrat Alternates', 11)).pack(pady=10)
         order_id_var = StringVar()
-        Entry(status_window, textvariable=order_id_var).pack()
+        ttk.Entry(status_window, textvariable=order_id_var).pack()
 
-        Label(status_window, text="Новый статус:").pack(pady=10)
+        Label(status_window, text="Новый статус:", background='#f0f4fc', foreground='black',
+              font=('Montserrat Alternates', 11)).pack(pady=10)
         status_var = StringVar()
         status_combobox = Combobox(status_window, values=["новый", "в работе", "готов", "завершен", "отменен"],
                                    state="readonly")
@@ -188,7 +199,12 @@ class ViewOrder(Frame):
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось обновить статус: {e}")
 
-        Button(status_window, text="Сохранить", command=save_status).pack(pady=20)
+
+        stl = ttk.Style()
+        stl.configure('my1.TButton', font=('Montserrat Alternates Bold', 11),
+                      background='#f0f4fc', foreground='black',
+                      height=15, anchor='center', padding=[1, 1])
+        ttk.Button(status_window, text="Сохранить", command=save_status, style='my1.TButton').pack(pady=10)
 
     def delete_selected(self):
         """Удаляет выбранную строку из базы данных и обновляет таблицу."""
@@ -224,12 +240,14 @@ class ViewOrder(Frame):
         # Создаем окно с деталями заказа
         details_window = Toplevel(self)
         details_window.title(f"Детали заказа {order_id}")
-        details_window.geometry("500x300")
+        details_window.geometry("700x300")
+        details_window.ic
 
         # Создаем Treeview для отображения деталей заказа
+
         details_tree = Treeview(details_window,
                                 columns=("order_item_id", "pizza_id", "quantity", "additional_ingredients"),
-                                show="headings")
+                                show="headings", style='mystyle1.Treeview')
         details_tree.heading("order_item_id", text="ID Элемента")
         details_tree.heading("pizza_id", text="ID Пиццы")
         details_tree.heading("quantity", text="Количество")
@@ -255,7 +273,7 @@ class ViewOrder(Frame):
             messagebox.showerror("Ошибка", f"Не удалось загрузить детали заказа: {e}")
 
         # Кнопка закрытия окна
-        Button(details_window, text="Закрыть", command=details_window.destroy).grid(row=1, column=0, pady=10)
+        ttk.Button(details_window, text="Закрыть", command=details_window.destroy).grid(row=1, column=0, pady=10)
 
         details_window.columnconfigure(0, weight=1)
         details_window.rowconfigure(0, weight=1)

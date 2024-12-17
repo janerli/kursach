@@ -10,14 +10,13 @@ from gui.main_window.main import mainWindow
 root = tk.Tk()
 root.withdraw()
 def quit_me():
-
     root.quit()
     root.destroy()
 
 
 if __name__ == "__main__":
-    create_tables(conn)
-    Login()
-    #mainWindow(1)
-    quit_me()
+    # create_tables(conn)
+    #Login()
+    mainWindow(1)
+    root.protocol("wm_delete_window", quit_me)
     root.mainloop()

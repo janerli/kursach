@@ -36,6 +36,7 @@ class MainWindow(Toplevel):
         self.geometry("1100x700")
         self.configure(bg="#715E48")
         self.title("Chozabretta")
+        self.iconphoto(False, PhotoImage(file=relative_to_assets("image_1.png")))
 
         self.current_window = None
         self.current_window_label = StringVar()

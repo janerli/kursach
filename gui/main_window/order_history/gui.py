@@ -3,7 +3,7 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, StringVar, messagebox
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, StringVar, messagebox, ttk
 from tkinter.ttk import Treeview
 
 from database import get_order_history, conn
@@ -49,7 +49,15 @@ class OrderHistory(Frame):
         #     fill="#D9D9D9",
         #     outline="")
 
-        self.tree = Treeview(self, columns=("order_id", "client_id", "order_date", "total_price"), show="headings")
+        style = ttk.Style()
+        style.configure('mystyle3.Treeview', rowheight=30, font=('Montserrat Alternates', 9))
+        style.configure('mystyle3.Treeview.Heading',
+                        background='#715E48',
+                        font=('Montserrat Alternates Bold', 11),
+                        foreground='black')
+
+        self.tree = Treeview(self, columns=("order_id", "client_id", "order_date", "total_price"),
+                             show="headings", style='mystyle3.Treeview')
         self.tree.heading("order_id", text="ID заказа", command=lambda: self.sort_by("order_id"))
         self.tree.heading("client_id", text="ID клиента", command=lambda: self.sort_by("client_id"))
         self.tree.heading("order_date", text="Дата заказа", command=lambda: self.sort_by("order_date"))

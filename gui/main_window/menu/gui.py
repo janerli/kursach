@@ -8,9 +8,9 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, ttk
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
 
-from tkinter import Frame, Canvas, Label, Entry, Button, PhotoImage, messagebox, Toplevel, filedialog
+from tkinter import Frame, Canvas, Label, Entry, Button, PhotoImage, messagebox, Toplevel, filedialog, ttk
 import os
 from tkinter.ttk import Treeview, Scrollbar
 
@@ -40,7 +40,8 @@ class Menu(Frame):
 
         # Кэш для изображений
         self.image_cache = {}
-        self.access_level = user_session.session.get_access_level()
+        # self.access_level = user_session.session.get_access_level()
+        self.access_level = 1
         print(f"Уровень доступа: {self.access_level}")
 
         # Создаём интерфейс
@@ -48,7 +49,15 @@ class Menu(Frame):
         self.load_menu()
         self.tree.update()
         style1 = ttk.Style()
-        style1.configure('mystyle.Treeview', rowheight=50)
+        style1.configure('mystyle.Treeview', rowheight=50, font=('Montserrat Alternates', 9))
+        style1.configure('mystyle.Treeview.Heading',
+                         background='#715E48',
+                         font=('Montserrat Alternates Bold', 11),
+                         foreground='black')
+        style1.configure('mystyle.Treeview.Cell', wraplength=340)
+        btn_style = ttk.Style()
+        btn_style.configure('my.TButton', font=('Montserrat Alternates Bold', 10),
+                            background='#CEAB83', foreground='black')
 
 
 
@@ -84,39 +93,39 @@ class Menu(Frame):
         # )
 
         # Поле для поиска
-        Label(self, text="Поиск:", bg="#CEAB83", font=("Arial", 12)).place(x=50, y=110)
-        self.search_entry = Entry(self)
-        self.search_entry.place(x=110, y=110, width=200)
-        Button(self, text="Найти", command=self.search_pizzas).place(x=320, y=108)
+        Label(self, text="Поиск:", bg="#CEAB83", font=("Montserrat Alternates", 13)).place(x=45, y=85)
+        self.search_entry = ttk.Entry(self)
+        self.search_entry.place(x=110, y=90, width=200)
+        ttk.Button(self, text="Найти", command=self.search_pizzas, style='my.TButton').place(x=320, y=88)
 
         # Таблица для отображения меню
 
         self.tree = Treeview(self, show="tree headings", style="mystyle.Treeview")
         self.tree["columns"] = ("name", "description", "price", "weight")
-        self.tree["height"] = 15
+        self.tree["selectmode"] = "browse"
         self.tree.heading("name", text="Название")
         self.tree.heading("description", text="Описание")
         self.tree.heading("price", text="Цена (₽)")
         self.tree.heading("weight", text="Вес (г)")
         self.tree.heading("#0", text="Фото")
-        self.tree.column("name", width=20, anchor="center")
-        self.tree.column("description", width=20, anchor="center")
-        self.tree.column("price", width=20, anchor="center")
-        self.tree.column("weight", width=20, anchor="center")
-        self.tree.column("#0", width=100, anchor="center")
+        self.tree.column("name", width=180, anchor="center")
+        self.tree.column("description", width=340, anchor="n")
+        self.tree.column("price", width=100, anchor="center")
+        self.tree.column("weight", width=100, anchor="center")
+        self.tree.column("#0", width=60, anchor="center")
         self.tree.configure(height=50)
-        self.tree.place(x=50, y=150, width=810, height=400)
+        self.tree.place(x=50, y=130, width=850, height=520)
 
         # Прокрутка для таблицы
         scrollbar = Scrollbar(self, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscroll=scrollbar.set)
-        scrollbar.place(x=860, y=150, height=400)
+        scrollbar.place(x=900, y=130, height=520)
 
         # Кнопки управления
         if self.access_level == 1:
-            Button(self, text="Добавить пиццу", command=self.open_add_pizza_window).place(x=50, y=580, width=150, height=30)
-            Button(self, text="Редактировать пиццу", command=self.open_edit_pizza_window).place(x=210, y=580, width=150, height=30)
-            Button(self, text="Удалить пиццу", command=self.delete_pizza).place(x=370, y=580, width=150, height=30)
+            ttk.Button(self, text="Добавить пиццу", command=self.open_add_pizza_window, style='my.TButton').place(x=50, y=650, width=150, height=30)
+            ttk.Button(self, text="Редактировать пиццу", command=self.open_edit_pizza_window, style='my.TButton').place(x=210, y=650, width=200, height=30)
+            ttk.Button(self, text="Удалить пиццу", command=self.delete_pizza, style='my.TButton').place(x=420, y=650, width=150, height=30)
 
         # Привязка события для отображения изображения
         # self.tree.bind("<<TreeviewSelect>>", self.show_image)
@@ -227,29 +236,29 @@ class AddOrEditPizzaWindow(Toplevel):
         self.configure(bg="#FFFFFF")
 
         # Поля для данных пиццы
-        Label(self, text="Название:").grid(row=0, column=0, pady=5, padx=5, sticky="e")
-        self.name_entry = Entry(self)
+        ttk.Label(self, text="Название:").grid(row=0, column=0, pady=5, padx=5, sticky="e")
+        self.name_entry = ttk.Entry(self)
         self.name_entry.grid(row=0, column=1, pady=5, padx=5)
 
-        Label(self, text="Описание:").grid(row=1, column=0, pady=5, padx=5, sticky="e")
-        self.description_entry = Entry(self)
+        ttk.Label(self, text="Описание:").grid(row=1, column=0, pady=5, padx=5, sticky="e")
+        self.description_entry = ttk.Entry(self)
         self.description_entry.grid(row=1, column=1, pady=5, padx=5)
 
-        Label(self, text="Цена (₽):").grid(row=2, column=0, pady=5, padx=5, sticky="e")
-        self.price_entry = Entry(self)
+        ttk.Label(self, text="Цена (₽):").grid(row=2, column=0, pady=5, padx=5, sticky="e")
+        self.price_entry = ttk.Entry(self)
         self.price_entry.grid(row=2, column=1, pady=5, padx=5)
 
-        Label(self, text="Вес (г):").grid(row=3, column=0, pady=5, padx=5, sticky="e")
-        self.weight_entry = Entry(self)
+        ttk.Label(self, text="Вес (г):").grid(row=3, column=0, pady=5, padx=5, sticky="e")
+        self.weight_entry = ttk.Entry(self)
         self.weight_entry.grid(row=3, column=1, pady=5, padx=5)
 
-        Label(self, text="Изображение:").grid(row=4, column=0, pady=5, padx=5, sticky="e")
-        self.image_path_entry = Entry(self)
+        ttk.Label(self, text="Изображение:").grid(row=4, column=0, pady=5, padx=5, sticky="e")
+        self.image_path_entry = ttk.Entry(self)
         self.image_path_entry.grid(row=4, column=1, pady=5, padx=5)
-        Button(self, text="Выбрать файл", command=self.select_image).grid(row=4, column=2, padx=5)
+        ttk.Button(self, text="Выбрать файл", command=self.select_image).grid(row=4, column=2, padx=5)
 
         # Кнопка сохранения
-        Button(self, text="Сохранить", command=self.save_pizza).grid(row=5, column=0, columnspan=3, pady=20)
+        ttk.Button(self, text="Сохранить", command=self.save_pizza).grid(row=5, column=0, columnspan=3, pady=20)
 
         if pizza_id:
             self.load_pizza_data()
