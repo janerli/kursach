@@ -37,6 +37,7 @@ class MainWindow(Toplevel):
         self.configure(bg="#715E48")
         self.title("Chozabretta")
         self.iconphoto(False, PhotoImage(file=relative_to_assets("image_1.png")))
+        self.center_window()
 
         self.current_window = None
         self.current_window_label = StringVar()
@@ -199,5 +200,17 @@ class MainWindow(Toplevel):
     def quit_me(self):
         self.quit()
         self.destroy()
+
+    def center_window(self):
+        """Центрирует окно на экране."""
+        self.update_idletasks()
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        window_width = self.winfo_width()
+        window_height = self.winfo_height()
+        title_bar_height = 70
+        y = (screen_height - window_height - title_bar_height) // 2
+        x = (screen_width - window_width) // 2
+        self.geometry(f"+{x}+{y}")
 
 

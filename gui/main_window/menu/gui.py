@@ -49,10 +49,10 @@ class Menu(Frame):
         self.load_menu()
         self.tree.update()
         style1 = ttk.Style()
-        style1.configure('mystyle.Treeview', rowheight=50, font=('Montserrat Alternates', 9))
+        style1.configure('mystyle.Treeview', rowheight=100, font=('Montserrat Alternates', 13))
         style1.configure('mystyle.Treeview.Heading',
                          background='#715E48',
-                         font=('Montserrat Alternates Bold', 11),
+                         font=('Montserrat Alternates Bold', 15),
                          foreground='black')
         style1.configure('mystyle.Treeview.Cell', wraplength=340)
         btn_style = ttk.Style()
@@ -83,14 +83,6 @@ class Menu(Frame):
             fill="#000000",
             font=("Montserrat Alternates Bold", 36 * -1)
         )
-        # self.canvas.create_rectangle(
-        #     42.0,
-        #     95.0,
-        #     907.0,
-        #     666.0,
-        #     fill="#D9D9D9",
-        #     outline=""
-        # )
 
         # Поле для поиска
         Label(self, text="Поиск:", bg="#CEAB83", font=("Montserrat Alternates", 13)).place(x=45, y=85)
@@ -112,7 +104,7 @@ class Menu(Frame):
         self.tree.column("description", width=340, anchor="n")
         self.tree.column("price", width=100, anchor="center")
         self.tree.column("weight", width=100, anchor="center")
-        self.tree.column("#0", width=60, anchor="center")
+        self.tree.column("#0", width=130, anchor="center")
         self.tree.configure(height=50)
         self.tree.place(x=50, y=130, width=850, height=520)
 
@@ -157,7 +149,7 @@ class Menu(Frame):
         # print(f"Полный путь к файлу: {abs_path}")
         if os.path.exists(str(image_path)):
             try:
-                img = Image.open(abs_path).resize((50, 50), Image.LANCZOS)
+                img = Image.open(abs_path).resize((100, 100), Image.LANCZOS)
                 img_tk = ImageTk.PhotoImage(img)
                 self.image_cache[pizza_id] = img_tk
                 return img_tk

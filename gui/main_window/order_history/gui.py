@@ -50,10 +50,10 @@ class OrderHistory(Frame):
         #     outline="")
 
         style = ttk.Style()
-        style.configure('mystyle3.Treeview', rowheight=30, font=('Montserrat Alternates', 9))
+        style.configure('mystyle3.Treeview', rowheight=30, font=('Montserrat Alternates', 13))
         style.configure('mystyle3.Treeview.Heading',
                         background='#715E48',
-                        font=('Montserrat Alternates Bold', 11),
+                        font=('Montserrat Alternates Bold', 15),
                         foreground='black')
 
         self.tree = Treeview(self, columns=("order_id", "client_id", "order_date", "total_price"),

@@ -12,8 +12,11 @@ class AddClientWindow(Toplevel):
         self.conn = conn
         self.refresh_callback = refresh_callback
         self.title("Добавить клиента")
+        self.center_window()
         self.geometry("250x250")
+
         self.configure(bg="#FFFFFF")
+
 
         # Поля для ввода данных клиента
         Label(self, text="Имя:").grid(row=0, column=0, pady=5, padx=5, sticky="e")
@@ -38,6 +41,18 @@ class AddClientWindow(Toplevel):
 
         # Кнопка для сохранения клиента
         Button(self, text="Сохранить", command=self.save_client).grid(row=5, column=0, columnspan=2, pady=10)
+
+    def center_window(self):
+        """Центрирует окно на экране."""
+        self.update_idletasks()
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        window_width = self.winfo_width()
+        window_height = self.winfo_height()
+        title_bar_height = 70
+        y = (screen_height - window_height - title_bar_height) // 2
+        x = (screen_width - window_width) // 2
+        self.geometry(f"+{x}+{y}")
 
     def save_client(self):
         """Сохраняет нового клиента в базу данных."""

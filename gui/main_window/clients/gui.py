@@ -35,10 +35,10 @@ class Clients(Frame):
         self.canvas.place(x = 0, y = 0)
 
         style = ttk.Style()
-        style.configure('mystyle2.Treeview', rowheight=50,font=('Montserrat Alternates', 9))
+        style.configure('mystyle2.Treeview', rowheight=50,font=('Montserrat Alternates', 13))
         style.configure('mystyle2.Treeview.Heading',
                         background='#715E48',
-                        font=('Montserrat Alternates Bold', 11),
+                        font=('Montserrat Alternates Bold', 15),
                         foreground='black')
         style.configure('mystyle2.Treeview.Cell', wraplength=230)
 

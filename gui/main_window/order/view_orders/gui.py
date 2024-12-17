@@ -42,10 +42,10 @@ class ViewOrder(Frame):
             outline="")
 
         style = ttk.Style()
-        style.configure('mystyle1.Treeview', font=('Montserrat Alternates', 9))
+        style.configure('mystyle1.Treeview', rowheight=30, font=('Montserrat Alternates', 13))
         style.configure('mystyle1.Treeview.Heading',
                          background='#715E48',
-                         font=('Montserrat Alternates Bold', 11),
+                         font=('Montserrat Alternates Bold', 15),
                          foreground='black')
 
         self.tree = Treeview(self, columns=("order_id", "delivery", "status"), show="headings", style='mystyle1.Treeview')
@@ -156,7 +156,7 @@ class ViewOrder(Frame):
     def open_status_window(self):
         """Открывает окно изменения статуса заказа."""
         status_window = Toplevel(self)
-        status_window.iconphoto(False, PhotoImage(file='D:/damn/pycharm projects/kursach/gui/main_window/assets/image_1.png'))
+        # status_window.iconphoto(False, PhotoImage(file='D:/damn/pycharm projects/kursach/gui/main_window/assets/image_1.png'))
         status_window.title("Изменить статус заказа")
         status_window.geometry("300x200")
         status_window.configure(background="#f0f4fc")
@@ -228,6 +228,17 @@ class ViewOrder(Frame):
             messagebox.showerror("Ошибка", f"Не удалось удалить заказ: {e}")
 
     def open_order_details(self, event):
+        def center_window(root):
+            """Центрирует окно на экране."""
+            root.update_idletasks()
+            screen_width = root.winfo_screenwidth()
+            screen_height = root.winfo_screenheight()
+            window_width = root.winfo_width()
+            window_height = root.winfo_height()
+            title_bar_height = 70
+            y = (screen_height - window_height - title_bar_height) // 2
+            x = (screen_width - window_width) // 2
+            root.geometry(f"+{x}+{y}")
         """Открывает окно с подробностями заказа."""
         selected_item = self.tree.selection()
         if not selected_item:
@@ -240,6 +251,7 @@ class ViewOrder(Frame):
         # Создаем окно с деталями заказа
         details_window = Toplevel(self)
         details_window.title(f"Детали заказа {order_id}")
+        center_window(details_window)
         details_window.geometry("700x300")
 
 
@@ -277,3 +289,4 @@ class ViewOrder(Frame):
 
         details_window.columnconfigure(0, weight=1)
         details_window.rowconfigure(0, weight=1)
+
