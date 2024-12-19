@@ -167,64 +167,6 @@ def delete_pizza(conn, pizza_id):
         print(f"Произошла ошибка: {e}")
         return False
 
-def get_clients(conn):
-    cursor = conn.cursor()
-    try:
-        cursor.execute("SELECT client_id, name, phone, address FROM clients")
-        clients = [dict(row) for row in cursor.fetchall()]
-        return clients
-    except sqlite3.OperationalError as e:
-        print(f"Ошибка получения списка клиентов: {e}")
-        return []
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
-        return []
-
-
-def get_client_by_id(conn, client_id):
-    cursor = conn.cursor()
-    try:
-        cursor.execute("SELECT client_id, name, phone, address FROM clients WHERE client_id = ?", (client_id,))
-        client = cursor.fetchone()
-        return dict(client) if client else None
-    except sqlite3.OperationalError as e:
-        print(f"Ошибка получения информации о клиенте: {e}")
-        return None
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
-        return None
-
-
-def create_client(conn, name, phone, address):
-    cursor = conn.cursor()
-    try:
-        cursor.execute("INSERT INTO clients (name, phone, address) VALUES (?, ?, ?)", (name, phone, address))
-        conn.commit()
-        return True
-    except sqlite3.IntegrityError as e:
-        print(f"Ошибка: Клиент с таким телефоном уже существует: {e}")
-        return False
-    except Exception as e:
-        print(f"Произошла ошибка при создании клиента: {e}")
-        return False
-
-
-def update_client(conn, client_id, updates):
-    cursor = conn.cursor()
-    try:
-        set_query = ", ".join([f"{key} = ?" for key in updates])
-        query = f"UPDATE clients SET {set_query} WHERE client_id = ?"
-        values = list(updates.values()) + [client_id]
-        cursor.execute(query, values)
-        conn.commit()
-        return True
-    except sqlite3.OperationalError as e:
-        print(f"Ошибка обновления клиента: {e}")
-        return False
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
-        return False
-
 
 def delete_client(conn, client_id):
     cursor = conn.cursor()
@@ -248,15 +190,26 @@ def get_daily_revenue(conn):
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "SELECT SUM(total_price) FROM orders WHERE strftime('%Y-%m-%d', order_date) = strftime('%Y-%m-%d', 'now')"
+            "SELECT SUM(total_price) FROM order_history WHERE strftime('%Y-%m-%d', order_date) = strftime('%Y-%m-%d', 'now')"
         )
         revenue = cursor.fetchone()[0]
         return revenue if revenue is not None else 0.0
     except sqlite3.OperationalError as e:
         print(f"Ошибка получения выручки: {e}")
         return 0.0
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
+
+def get_revenue_by_period(conn, start_date, end_date):
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            SELECT SUM(total_price) 
+            FROM orders 
+            WHERE date(order_date) BETWEEN date(?) AND date(?)
+        """, (start_date, end_date))
+        revenue = cursor.fetchone()[0]
+        return revenue if revenue is not None else 0.0
+    except sqlite3.OperationalError as e:
+        print(f"Ошибка получения выручки: {e}")
         return 0.0
 
 
@@ -275,9 +228,6 @@ def get_top_3_pizzas(conn):
         return top_pizzas
     except sqlite3.OperationalError as e:
         print(f"Ошибка получения топ-3 пицц: {e}")
-        return []
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
         return []
 
 
@@ -333,8 +283,8 @@ def update_pizza_ingredients(conn, pizza_id, ingredient, action):
     cursor = conn.cursor()
     if action == "add":
         cursor.execute("INSERT INTO ingredients (pizza_id, name) VALUES (?, ?)", (pizza_id, ingredient))
-    elif action == "remove":
-        cursor.execute("DELETE FROM ingredients WHERE pizza_id = ? AND name = ?", (pizza_id, ingredient))
+    # elif action == "remove":
+    #     cursor.execute("DELETE FROM ingredients WHERE pizza_id = ? AND name = ?", (pizza_id, ingredient))
     else:
         raise ValueError("Недопустимое действие.")
 
@@ -597,6 +547,58 @@ def search_pizzas_by_name(conn, search_term):
         WHERE name LIKE ?
     """, (f"%{search_term}%",))
     return cursor.fetchall()
+
+# Добавление роли
+def add_role(conn, role_name):
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO access_levels (level_name) VALUES (?)", (role_name,))
+    conn.commit()
+
+
+# # Добавление пользователя
+# def add_user(conn, first_name, last_name, middle_name, username, password, access_level_id):
+#     cursor = conn.cursor()
+#     cursor.execute("""
+#         INSERT INTO users (first_name, last_name, middle_name, username, password, access_level_id)
+#         VALUES (?, ?, ?, ?, ?, ?)
+#     """, (first_name, last_name, middle_name, username, password, access_level_id))
+#     conn.commit()
+
+
+# Удаление пользователя
+def delete_user(conn, user_id):
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
+    conn.commit()
+
+
+# Редактирование пользователя
+def update_user(conn, user_id, first_name, last_name, middle_name, access_level_id):
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE users 
+        SET first_name = ?, last_name = ?, middle_name = ?, access_level_id = ? 
+        WHERE user_id = ?
+    """, (first_name, last_name, middle_name, access_level_id, user_id))
+    conn.commit()
+
+
+# Редактирование клиента
+def update_client(conn, client_id, first_name, last_name, middle_name, phone, address):
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE clients 
+        SET first_name = ?, last_name = ?, middle_name = ?, phone = ?, address = ? 
+        WHERE client_id = ?
+    """, (first_name, last_name, middle_name, phone, address, client_id))
+    conn.commit()
+
+
+# Удаление клиента
+def delete_client(conn, client_id):
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM clients WHERE client_id = ?", (client_id,))
+    conn.commit()
 
 
 

@@ -2,14 +2,14 @@ import tkinter as tk
 from gui.login.gui import Login
 from ct_db import create_tables
 from database import conn
-from gui.main_window.main import mainWindow
+from gui.main_window.main import MainWindow
 
 # from gui.main_window.main import mainWindow
 
 
 root = tk.Tk()
 root.withdraw()
-def quit_me():
+def quit_me(root):
     root.quit()
     root.destroy()
 
@@ -27,8 +27,8 @@ def center_window(root):
 
 if __name__ == "__main__":
     # create_tables(conn)
-    # Login()
-    mainWindow(1)
-    root.protocol("wm_delete_window", quit_me)
+    Login()
+    # mainWindow(1)
+    root.protocol("wm_delete_window", quit_me(root))
     center_window(root)
     root.mainloop()

@@ -1,7 +1,7 @@
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, StringVar, Listbox, messagebox, END
 
-from database import update_pizza_ingredients, get_pizza_ingredients, conn, add_ingredient_to_order, save_order, \
+from database import get_pizza_ingredients, conn, add_ingredient_to_order, save_order, \
     update_order_items
 
 OUTPUT_PATH = Path(__file__).parent

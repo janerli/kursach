@@ -3,6 +3,7 @@ from tkinter import Canvas, Entry, Button, PhotoImage, Toplevel, Frame, StringVa
     Label, ttk
 from tkinter.ttk import Scrollbar, Combobox, Treeview
 
+import user_session
 from database import update_order_status, move_order_to_history, get_all_orders, conn, get_order_details
 
 OUTPUT_PATH = Path(__file__).parent
@@ -17,7 +18,7 @@ class ViewOrder(Frame):
     def __init__(self, parent, controller=None, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-
+        self.access_level = user_session.session.get_access_level()
         self.configure(bg="#CEAB83")
 
 
@@ -141,6 +142,10 @@ class ViewOrder(Frame):
             height=71.0
         )
 
+        if self.access_level == 3:
+            delete_button.place_forget()
+            button_1.place_forget()
+
     def load_data(self):
         """Загружает данные из базы в таблицу."""
         for row in self.tree.get_children():
@@ -154,11 +159,25 @@ class ViewOrder(Frame):
             messagebox.showerror("Ошибка", f"Не удалось загрузить данные: {e}")
 
     def open_status_window(self):
+
         """Открывает окно изменения статуса заказа."""
+        def center_window(root):
+            """Центрирует окно на экране."""
+            root.update_idletasks()
+            screen_width = root.winfo_screenwidth()
+            screen_height = root.winfo_screenheight()
+            window_width = root.winfo_width()
+            window_height = root.winfo_height()
+            title_bar_height = 70
+            y = (screen_height - window_height - title_bar_height) // 2
+            x = (screen_width - window_width) // 2
+            root.geometry(f"+{x}+{y}")
+
         status_window = Toplevel(self)
-        # status_window.iconphoto(False, PhotoImage(file='D:/damn/pycharm projects/kursach/gui/main_window/assets/image_1.png'))
+        status_window.iconphoto(False, PhotoImage(file="gui/icon.png"))
         status_window.title("Изменить статус заказа")
         status_window.geometry("300x200")
+        center_window(status_window)
         status_window.configure(background="#f0f4fc")
 
         Label(status_window, text="Номер заказа:", background='#f0f4fc', foreground='black',
@@ -228,6 +247,7 @@ class ViewOrder(Frame):
             messagebox.showerror("Ошибка", f"Не удалось удалить заказ: {e}")
 
     def open_order_details(self, event):
+        """Открывает окно с подробностями заказа."""
         def center_window(root):
             """Центрирует окно на экране."""
             root.update_idletasks()
@@ -239,7 +259,7 @@ class ViewOrder(Frame):
             y = (screen_height - window_height - title_bar_height) // 2
             x = (screen_width - window_width) // 2
             root.geometry(f"+{x}+{y}")
-        """Открывает окно с подробностями заказа."""
+
         selected_item = self.tree.selection()
         if not selected_item:
             messagebox.showwarning("Ошибка", "Выберите строку для просмотра деталей!")
@@ -253,6 +273,7 @@ class ViewOrder(Frame):
         details_window.title(f"Детали заказа {order_id}")
         center_window(details_window)
         details_window.geometry("700x300")
+        details_window.iconphoto(False, PhotoImage(file="gui/icon.png"))
 
 
         # Создаем Treeview для отображения деталей заказа

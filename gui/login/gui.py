@@ -3,7 +3,7 @@ from pathlib import Path
 from tkinter import Toplevel, Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
 
 import user_session
-from ..main_window.main import mainWindow
+from ..main_window.main import MainWindow
 from database import conn
 import database
 
@@ -25,7 +25,7 @@ class Login(Toplevel):
         if user_id:
             self.destroy()
             user_session.session.set_access_level(access_level)
-            mainWindow(access_level)
+            MainWindow()
             return
         else:
             messagebox.showerror("Ошибка", "Неправильный логин или пароль")
@@ -35,6 +35,9 @@ class Login(Toplevel):
 
         self.geometry("1100x700")
         self.configure(bg = "#FFFFFF")
+        self.iconphoto(False, PhotoImage(file="gui/icon.png"))
+        self.title("Авторизация")
+        self.center_window()
 
 
         self.canvas = Canvas(
@@ -180,3 +183,15 @@ class Login(Toplevel):
 
         self.resizable(False, False)
         self.mainloop()
+
+    def center_window(self):
+        """Центрирует окно на экране."""
+        self.update_idletasks()
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        window_width = self.winfo_width()
+        window_height = self.winfo_height()
+        title_bar_height = 70
+        y = (screen_height - window_height - title_bar_height) // 2
+        x = (screen_width - window_width) // 2
+        self.geometry(f"+{x}+{y}")

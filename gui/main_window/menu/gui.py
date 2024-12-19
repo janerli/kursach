@@ -40,8 +40,7 @@ class Menu(Frame):
 
         # Кэш для изображений
         self.image_cache = {}
-        # self.access_level = user_session.session.get_access_level()
-        self.access_level = 1
+        self.access_level = user_session.session.get_access_level()
         print(f"Уровень доступа: {self.access_level}")
 
         # Создаём интерфейс
@@ -89,6 +88,7 @@ class Menu(Frame):
         self.search_entry = ttk.Entry(self)
         self.search_entry.place(x=110, y=90, width=200)
         ttk.Button(self, text="Найти", command=self.search_pizzas, style='my.TButton').place(x=320, y=88)
+        ttk.Button(self, text="Обновить", command=self.load_menu, style='my.TButton').place(x=450, y=88)
 
         # Таблица для отображения меню
 
@@ -200,14 +200,16 @@ class Menu(Frame):
             return
 
         item_index = self.tree.index(selected[0])
+
         pizza_id = list(self.image_cache.keys())[item_index]
+
 
         confirm = messagebox.askyesno("Удаление", f"Вы уверены, что хотите удалить пиццу ID {pizza_id}?")
         if not confirm:
             return
 
         try:
-            delete_pizza(self.controller.conn, pizza_id)
+            delete_pizza(conn, pizza_id)
             messagebox.showinfo("Успех", "Пицца успешно удалена!")
             self.load_menu()
         except sqlite3.Error as e:
@@ -226,6 +228,7 @@ class AddOrEditPizzaWindow(Toplevel):
         self.title("Редактировать пиццу" if pizza_id else "Добавить пиццу")
         self.geometry("400x400")
         self.configure(bg="#FFFFFF")
+        self.iconphoto(False, PhotoImage(file="gui/icon.png"))
 
         # Поля для данных пиццы
         ttk.Label(self, text="Название:").grid(row=0, column=0, pady=5, padx=5, sticky="e")
